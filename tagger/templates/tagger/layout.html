@@ -1,0 +1,79 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- https://www.designsystem.tech.gov.sg/docs/installation/ -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sgds-govtech@1.3.22/css/sgds.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static 'tagger/styles/styles.css' %}">
+
+    <!-- Include JQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+
+    <!-- Include Bootstrap -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
+
+    <title>{% block title %}{% endblock %}</title>
+</head>
+<body>
+    <div class="flex-wrapper">
+        <div>
+            <div class="sgds-masthead">
+                <a href="https://www.gov.sg" target="_blank">
+                    <span class="sgds-icon sgds-icon-sg-crest"></span>
+                    <span class="is-text">A Singapore Government Agency Website</span>
+                </a>
+            </div>
+        
+            <nav class="sgds-navbar" role="navigation">
+                <div class="sgds-navbar-menu">
+                    <div class="sgds-navbar-start">
+                        <a class="sgds-navbar-item is-uppercase is-active">
+                            ICD10 Tagger
+                        </a>
+                    </div>
+                    <div class="sgds-navbar-end">
+                        <a href="{% url 'admin:index' %}" class="sgds-navbar-item is-uppercase is-tab">
+                            Admin
+                        </a>
+                    </div>
+                </div>
+            </nav>
+            
+            <section class="sgds-section">
+                <div class="container p-5">
+                    {% block content %}{% endblock %}
+                </div>
+            </section>
+        </div>
+
+        <footer class='sgds-footer'>
+            <div class="top-section">
+                <div class="sgds-container is-fluid">
+                    <div class="row">
+                        <div class="col">
+                            <img class="ica-logo" src="{% static 'tagger/images/ica-logo.png' %}" alt="Immigration & Checkpoints Authority Logo">
+                        </div>
+                    </div>
+                </div>
+            </div>
+    
+            <div class="bottom-section">
+                <div class="sgds-container is-fluid">
+                    <div class="row is-multiline">
+                        <div class="col is-12 has-text-left-desktop has-text-left-tablet has-text-left-mobile">
+                            <p> © Information Management Division | Data Management & Analytics Branch</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+</body>
+</html>
