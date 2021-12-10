@@ -13,7 +13,7 @@ class Category(models.Model):
     """
         ICD Category Model
     """
-    description = models.CharField(max_length = 100, unique = True)
+    description = models.CharField(max_length = 110, unique = True)
 
     class Meta:
         verbose_name_plural = "Categories"
@@ -28,7 +28,7 @@ class ICD(models.Model):
         ICD Death Cause Model
     """
     code = models.CharField(max_length = 4, unique = True)
-    description = models.CharField(max_length = 100, unique = True)
+    description = models.CharField(max_length = 160, unique = True)
     category = models.ForeignKey(Category, on_delete = models.CASCADE, related_name = "death_causes")
 
     class Meta:
@@ -43,7 +43,7 @@ class Mapping(models.Model):
     """
         Mapping Model
     """
-    description = models.CharField(max_length = 100, unique = True)
+    description = models.CharField(max_length = 200, unique = True)
     icd = models.ForeignKey(ICD, on_delete = models.CASCADE, related_name = "mappings")
 
     class Meta:
@@ -75,7 +75,7 @@ class Annotation(models.Model):
     """
         Annotation Model
     """
-    description = models.CharField(max_length = 100, unique = True)
+    description = models.CharField(max_length = 200, unique = True)
     icd = models.ForeignKey(ICD, on_delete = models.CASCADE, related_name = "annotations")
 
     class Meta:
