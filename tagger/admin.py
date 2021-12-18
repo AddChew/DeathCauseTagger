@@ -14,7 +14,7 @@ class ExportModelAdmin(ExportMixin, admin.ModelAdmin):
 
 
 
-### Define Resource Classes
+### Resource Classes
 class BaseMeta:
     """
         Base Meta class for Resources
@@ -75,61 +75,89 @@ class PeriodResource(resources.ModelResource):
 
 
 
-### Define Admin Classes
+### Admin Classes
+@admin.register(Annotation)
 class AnnotationAdmin(ExportModelAdmin, ExportActionMixin):
     """
         Admin class for Annotation Model
     """
     list_display = ("description", "icd")
-    list_filter = ("icd",)
+    list_filter = ("icd__category",)
+    search_fields = (
+        "description__icontains",
+        "icd__description__icontains", 
+        "icd__code__icontains", 
+        )
     resource_class = AnnotationResource
 
 
+@admin.register(Category)
 class CategoryAdmin(ImportExportModelAdmin, ExportActionMixin):
     """
         Admin class for Category Model
     """
     list_display = ("id", "description")
+    search_fields = (
+        "description__icontains",
+        )
     resource_class = CategoryResource
 
 
+@admin.register(ICD)
 class ICDAdmin(ImportExportModelAdmin, ExportActionMixin):
     """
         Admin class for ICD Model
     """
     list_display = ("id", "code", "description", "category")
     list_filter = ("category",)
+    search_fields = (
+        "description__icontains",
+        "code__icontains", 
+        )
     resource_class = ICDResource
 
 
+@admin.register(Mapping)
 class MappingAdmin(ImportExportModelAdmin, ExportActionMixin):
     """
         Admin class for Mapping Model
     """
     list_display = ("description", "icd")
-    list_filter = ("icd",)
+    list_filter = ("icd__category",)
+    search_fields = (
+        "description__icontains",
+        "icd__description__icontains", 
+        "icd__code__icontains", 
+        )
     resource_class = MappingResource
 
 
+@admin.register(Period)
 class PeriodAdmin(ImportExportModelAdmin, ExportActionMixin):
     """
         Admin class for Period Model
     """
     list_display = ("icd_input", "threshold", "icd_below", "icd_equal", "icd_above")
+    list_filter = ("threshold",)
+    search_fields = (
+        "icd_input__description__icontains", 
+        "icd_input__code__icontains", 
+        "icd_below__description__icontains", 
+        "icd_below__code__icontains", 
+        "icd_equal__description__icontains", 
+        "icd_equal__code__icontains", 
+        "icd_above__description__icontains", 
+        "icd_above__code__icontains", 
+        "threshold"
+        )
     resource_class = PeriodResource
 
 
+@admin.register(User)
 class UserAdmin(admin.ModelAdmin):
     """
         Admin class for User Model
     """
     list_display = ("username", "date_joined", "is_superuser", "is_active", "last_login")
-
-
-# Register models to admin site
-admin.site.register(Annotation, AnnotationAdmin)
-admin.site.register(Category, CategoryAdmin)
-admin.site.register(ICD, ICDAdmin)
-admin.site.register(Mapping, MappingAdmin)
-admin.site.register(Period, PeriodAdmin)
-admin.site.register(User, UserAdmin)
+    list_filter = ("is_active", "is_superuser")
+    search_fields = ("username__startswith",)
