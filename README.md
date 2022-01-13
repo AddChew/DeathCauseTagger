@@ -1,5 +1,5 @@
 # DeathCauseTagger (WOG laptop compatible version)
-DeathCauseTagger is a web application that tags death causes to their respective ICD10 codes
+DeathCauseTagger is a web application that tags death causes to their respective ICD10 codes.
 
 ## Installation Instructions
 This set of instructions assumes that you already have anaconda prompt installed on your computer.
