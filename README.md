@@ -22,6 +22,8 @@ pip install -r requirements.txt
 ```
 
 ## Usage Instructions
+
+#### Tagging of death causes
 1. Navigate to app folder in DeathCauseTagger-main folder by running the following command in anaconda prompt:
 ```
 cd app
@@ -31,3 +33,14 @@ cd app
 python app.py
 ```
 3. Upload CSV file containing the death causes that you want to tag. You can test DeathCauseTagger with the test files provided in test files folder.
+
+#### Updating of death causes-icd codes database
+1. Navigate to app folder in DeathCauseTagger-main folder by running the following command in anaconda prompt:
+```
+cd app
+```
+2. Launch update database module by running the following command in anaconda prompt:
+```
+python update_database.py
+```
+3. Upload CSV file containing the new death causes-icd codes mappings that you would like to update/add to the existing database.
