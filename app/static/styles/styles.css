@@ -1,0 +1,76 @@
+fieldset{
+    background-color: #EDF6FF;
+    border-radius: 8px;
+    border-color:  #6DAFFE;
+}
+
+table{
+    border-collapse: collapse; 
+}
+
+th{
+    border: 1px #437FC7 solid;
+    padding: 5px;
+    background-color: #437FC7;
+    font-weight: bold;
+    color: white;
+}
+
+td{
+    border:1px #437FC7 solid;
+    padding: 5px;
+    font-weight: 12px;
+}
+
+tr:nth-child(even) {
+    background-color: white;
+}
+
+button{
+    margin: 5px;
+}
+
+ul{
+    display: none;
+}
+
+progress{
+    -webkit-appearance: none; 
+    width: 50%;
+}
+
+::-webkit-progress-bar{
+    background-color: white;
+    border: 1px #437FC7 solid;
+    border-radius: 16px;
+}
+
+::-webkit-progress-value{
+    background-color: #437FC7;
+    border-radius: 16px;
+}
+
+#progressBar{
+    display: flex;
+    justify-content: center;
+}
+
+.main-container{
+    display: flex;
+    justify-content: center;
+}
+
+.sub-container{
+    width: 50%;
+    margin: 10px;
+    overflow: auto;
+    height: 95vh;
+}
+
+.header{
+    text-align: center; 
+}
+
+.bold{
+    font-weight: bold;
+}

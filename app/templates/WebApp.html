@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+
+<html>
+
+    <head>
+        <meta charset="UTF-8">
+        <!--  Include css styles from styles directory  -->
+        <link rel="stylesheet" href="{{ url_for('static', filename = 'styles/styles.css') }}">
+        <!--  Include choices css styles from styles directory  -->
+        <link rel="stylesheet" href="{{ url_for('static', filename = 'styles/choices.min.css') }}">
+        <!--  Include d3 library from the jslibs directory  -->
+        <script src="{{ url_for('static', filename = 'appscripts/jslibs/d3.min.js') }}" defer></script>
+        <!--  Include choices library from the jslibs directory  -->
+        <script src="{{ url_for('static', filename = 'appscripts/jslibs/choices.min.js') }}" defer></script>
+        <!--  Include helper functions in utils.js from appscripts directory  -->
+        <script src="{{ url_for('static', filename = 'appscripts/main.js') }}" defer></script>
+        
+        <script src="{{ url_for('static', filename = 'appscripts/stop_server.js') }}"></script>
+    </head>
+
+    <body>
+        <div class='main-container'>
+            <div class='sub-container' id='sub-container-1'>
+                <h1 class='header'>ICD Codes Tagger</h1>
+                <div id='fileSelector'>
+                    <fieldset>
+                        <legend class='bold'>Upload Cause Description CSV File</legend>
+                        <input type='file' accept='.csv' onchange='displayFileInfo()'>
+                        <output>
+                            <ul>
+                                <li></li>
+                            </ul>
+                        </output>
+                    </fieldset>
+                </div>
+            </div>
+        </div>
+
+        <template id='causeDescColSelectorTemplate'>
+            <div id='causeDescColSelector'>
+                <br>
+                <fieldset>
+                    <legend class='bold'>Select Cause Description Column</legend>
+                    <select onchange='renderSubmitButton()'></select>
+                </fieldset>
+            </div>
+        </template>
+
+        <template id='timePeriodColSelectorTemplate'>
+            <div id='timePeriodColSelector'>
+                <br>
+                <fieldset>
+                    <legend class='bold'>Select Illness Period Column</legend>
+                    <select onchange='renderSubmitButton()'></select>
+                </fieldset>
+            </div>
+        </template>
+
+        <template id='dataTableTemplate'>
+            <div class='sub-container' id='sub-container-2'>
+                <fieldset>
+                    <legend class='bold'>Preview of uploaded CSV file</legend>
+                    <div id='progress'>
+                        <h1 class='header'>35%</h1>
+                        <div id='progressBar'>
+                            <progress value=35 max=100></progress>
+                        </div>
+                        <h4 class='header'>Please wait while the application is loading...</h4>
+                    </div>
+                    <table class='data-table'>
+                        <thead>
+                            <tr></tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </fieldset>
+            </div>
+        </template>
+
+        <template id='submitButtonTemplate'>
+            <div id='submitButton'>
+                <br>
+                <fieldset>
+                    <legend class='bold'>Get ICD Codes</legend>
+                    <button onclick='loadingPage()'>Submit</button>
+                </fieldset>  
+            </div>         
+        </template>
+
+        <template id='downloadButtonTemplate'>
+            <div id='downloadButton'>
+                <br>
+                <fieldset>
+                    <legend class='bold'>Download ICD Codes</legend>
+                    <button onclick='downloadICDcodes()'>Download</button>
+                </fieldset> 
+            </div>         
+        </template>
+
+        <template id='dataLabelingContainerTemplate'>
+            <fieldset id='dataLabelingContainer'>
+                <legend class='bold'>Obtaining ICD Codes</legend>
+                <div id='progress'>
+                    <h1 id='percentCompleted' class='header'>0%</h1>
+                    <div id='progressBar'>
+                        <progress value=0 max=100></progress>
+                    </div>
+                    <h4 class='header'>Please wait while the application is loading...</h4>
+                </div>
+            </fieldset>
+        </template>
+
+        <template id='dataLabelingContentTemplate'>
+            <div id='dataLabelingContent'>
+                <div>
+                    <br>
+                    <label>
+                        Cause Description:
+                        <br><br>
+                        <output class='bold causeDesc'></output>
+                    </label>
+                </div>
+                <br>
+                <div>
+                    <label>
+                        Illness Period:
+                        <br><br>
+                        <output class='bold illnessPeriod'></output>
+                    </label>
+                </div>
+                <br>
+                <div>
+                    <label>
+                        Suggested ICD Codes:
+                        <br><br>
+                        <select id='suggestedOptions'></select>
+                    </label>
+                </div>
+                <br>
+                <div>
+                    <label>
+                        Full List of ICD Codes:
+                        <br><br>
+                        <select id='allOptions'></select>
+                    </label>
+                </div>
+                <br>
+                <div>
+                    <button id='prev' onclick='loadNextPage(-1)'>Previous</button>
+                    <button id='submit' onclick='submit()'>Submit</button>
+                    <button id='next' onclick='loadNextPage()' >Next</button>
+                </div>
+                <div>
+                    <p></p>
+                </div>
+            </div>
+        </template>
+
+        <template id='labelledTableTemplate'>
+            <div class='sub-container' id='sub-container-2'>
+                <fieldset>
+                    <legend class='bold'>Preview of labelled records</legend>
+                    <table class='data-table'>
+                        <thead>
+                            <tr></tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </fieldset>
+            </div>
+        </template>
+
+    </body>
+
+</html>
