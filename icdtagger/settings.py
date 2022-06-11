@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-om7c65m@c+6xtbbs_qlys55nzbn^!@5)riy!-ji(xx$y3ex!li
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["0.0.0.0"]
 
 
 # Application definition
@@ -87,11 +87,11 @@ WSGI_APPLICATION = 'icdtagger.wsgi.application'
 # Connect to PostgreSQL Database
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'icd',
-        'USER': 'icd',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2', # 'django.db.backends.postgresql',
+        'NAME': os.environ.get('ICD_NAME'),  #' icd',
+        'USER': os.environ.get('ICD_USER'), # 'icd',
         'PASSWORD': os.getenv("ICD_PASSWORD"),
-        'HOST': 'localhost',
+        'HOST': '0.0.0.0', # 'db',
         'PORT': '5432'
     }
 }
