@@ -87,11 +87,11 @@ WSGI_APPLICATION = 'icdtagger.wsgi.application'
 # Connect to PostgreSQL Database
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2', # 'django.db.backends.postgresql',
-        'NAME': os.environ.get('ICD_NAME'),  #' icd',
-        'USER': os.environ.get('ICD_USER'), # 'icd',
-        'PASSWORD': os.getenv("ICD_PASSWORD"),
-        'HOST': '0.0.0.0', # 'db',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.environ.get('POSTGRES_NAME'),
+        'USER': os.environ.get('POSTGRES_USER'),
+        'PASSWORD': os.environ.get('POSTGRES_PASSWORD'),
+        'HOST': 'db',
         'PORT': '5432'
     }
 }

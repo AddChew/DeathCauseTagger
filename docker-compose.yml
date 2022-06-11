@@ -1,18 +1,14 @@
-version: "3"
+version: "3.3"
    
 services:
   db:
     image: postgres
-    ports: 
-      - '5432'
     volumes:
       - ./data/db:/var/lib/postgresql/data
     environment:
-      - POSTGRES_DB=icd
-      - POSTGRES_USER=icd
-      - POSTGRES_PASSWORD=icd
-    networks:
-      - djangonetwork
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
   web:
     build: .
     command: python3 manage.py runserver 0.0.0.0:8000
@@ -21,16 +17,8 @@ services:
     ports:
       - "8000:8000"
     environment:
-      - POSTGRES_NAME=icd
-      - POSTGRES_USER=icd
-      - POSTGRES_PASSWORD=icd
+      - POSTGRES_NAME=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
     depends_on:
       - db
-    links:
-      - db:db
-    networks:
-      - djangonetwork
-
-networks:
-  djangonetwork:
-    driver: bridge

@@ -4,3 +4,4 @@ __pycache__
 fixtures-all/
 tasks.py
 **/migrations/
+data/
