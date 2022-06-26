@@ -4,7 +4,7 @@
 
 1.  Clone project branch
 ```sh
-git clone -branch docker https://github.com/AddChew/DeathCauseTagger.git
+git clone -branch conda-postgres https://github.com/AddChew/DeathCauseTagger.git
 ```
 
 2. Navigate into project folder
