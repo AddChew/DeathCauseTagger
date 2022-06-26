@@ -1,6 +1,6 @@
 ## Death Cause Tagger
 
-### How to run the project via Docker
+### Installation instructions
 
 1.  Clone project branch
 ```sh
@@ -12,32 +12,75 @@ git clone -branch docker https://github.com/AddChew/DeathCauseTagger.git
 cd DeathCauseTagger
 ```
 
-3. Build docker image
+3. Create conda environment
 ```sh
-sudo docker-compose run web
+conda create -y --name conda-postgres python=3.7
 ```
 
-4. Run docker container
+4. Activate conda environment
 ```sh
-docker-compose up
+conda activate conda-postgres
 ```
 
-5. Migrate database and create super user
-- Execute the following commands in a different shell
+5. Install the necessary dependencies
 ```sh
-# Step 1: Get CONTAINER_ID of the web application
-docker ps # i.e. 358d875f1267
+conda install -y -c conda-forge --file requirements.txt
+pip install -r requirements_pip.txt
+```
 
-# Step 2: Log in into the container for the web application
-docker exec -t -i <CONTAINER_ID> bash # i.e. docker exec -t -i 358d875f1267 bash
+6. Initialise base database
+```sh
+initdb -D postgres
+```
 
-# Step 3: Perform database migration
-python3 manage.py makemigrations tagger
-python3 manage.py migrate
+7. Start database server
+```sh
+pg_ctl -D postgres -l logfile start
+```
 
-# Step 4: Create super user
-python3 manage.py createsuperuser
+8. Create project database
+```sh
+createdb
+createdb deathcauses
+```
 
-# Step 5: Exit container
-Ctrl-D
+9. Create database user
+```sh
+psql -c "CREATE USER <your username> with PASSWORD '<your password>';"
+```
+
+10. Set database user username and password as environment variables
+```sh
+# Set username as environment variable
+conda env config vars set POSTGRES_USER=<your username>
+conda activate conda-postgres
+
+# Set password as environment variable
+conda env config vars set POSTGRES_PASSWORD=<your password>
+conda activate conda-postgres
+```
+
+11. Migrate database
+```sh
+python manage.py makemigrations tagger
+python manage.py migrate
+```
+
+12. Create superuser
+```sh
+python manage.py createsuperuser
+```
+
+13. Start the app
+```sh
+python manage.py runserver
+```
+
+14. Navigate and login into the admin page to upload the fixtures for populating the database.
+
+### Usage instructions
+
+1. Execute the following command to stop the database server when you no longer need it
+```sh
+pg_ctl -D postgres -l logfile stop
 ```

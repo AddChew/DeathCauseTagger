@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-om7c65m@c+6xtbbs_qlys55nzbn^!@5)riy!-ji(xx$y3ex!li
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["0.0.0.0"]
+ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -88,11 +88,11 @@ WSGI_APPLICATION = 'icdtagger.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.environ.get('POSTGRES_NAME'),
+        'NAME': 'deathcauses',
         'USER': os.environ.get('POSTGRES_USER'),
         'PASSWORD': os.environ.get('POSTGRES_PASSWORD'),
-        'HOST': 'db',
-        'PORT': '5432'
+        'HOST': 'localhost',
+        'PORT': ''
     }
 }
 
