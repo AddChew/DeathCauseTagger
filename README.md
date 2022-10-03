@@ -84,3 +84,51 @@ python manage.py runserver
 ```sh
 pg_ctl -D postgres -l logfile stop
 ```
+
+### Postgres Exporter
+
+1. Create env file (i.e. postgres_exporter.env) for postgres exporter where we will store our environment variables.
+```sh
+# postgres_exporter.env
+DATA_SOURCE_NAME="postgresql://<your username>:<your password>@localhost:5432/<your db name>?sslmode=disable"
+```
+
+1. Set postgres url as environment variable
+```sh
+# In our case, the db name is deathcauses
+# conda env config vars set PG_EXPORTER_URL="postgres://<your username>:<your password>@localhost:5432/deathcauses
+conda env config vars set PG_EXPORTER_URL="postgres://<your username>:<your password>@localhost:5432/<your db name>"
+```
+
+2. Start database server
+```sh
+pg_ctl -D postgres -l logfile start
+```
+
+3. Start pg_exporter
+```sh
+./pg_exporter
+```
+
+4. Kill pg_exporter process
+```sh
+# Get PID
+sudo netstat -nlp | grep :9630
+
+# Kill pg_exporter process
+sudo kill <PID>
+```
+
+### Postgres Extensions
+
+1. List installed postgres extensions
+```
+psql
+\dx
+```
+
+- Install postgres extension
+``
+psql
+CREATE EXTENSION IF NOT EXISTS <extension name>
+``
