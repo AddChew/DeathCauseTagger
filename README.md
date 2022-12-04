@@ -119,7 +119,7 @@ sudo netstat -nlp | grep :9630
 sudo kill <PID>
 ```
 
-### Postgres Extensions
+### Postgres Extensions (this part might not be necessary)
 
 1. List installed postgres extensions
 ```
