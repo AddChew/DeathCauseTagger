@@ -137,3 +137,8 @@ CREATE EXTENSION IF NOT EXISTS <extension name>
 ```sh
 python manage.py migrate tagger zero
 ```
+
+### How to connect to postgres db as another user
+```sh
+psql -d <database name> -U <your username>
+```
