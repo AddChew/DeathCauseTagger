@@ -38,18 +38,18 @@ initdb -D postgres
 pg_ctl -D postgres -l logfile start
 ```
 
-8. Create project database
+8. Create database superuser
+
 ```sh
-createdb
-createdb deathcauses
+createuser --encrypted --pwprompt <your username>
 ```
 
-9. Create database user
+10. Create project database
 ```sh
-psql -c "CREATE USER <your username> with PASSWORD '<your password>';"
+createdb --owner=<your username> deathcauses
 ```
 
-10. Set database user username and password as environment variables
+11. Set database user username and password as environment variables
 ```sh
 # Set username as environment variable
 conda env config vars set POSTGRES_USER=<your username>
@@ -60,23 +60,23 @@ conda env config vars set POSTGRES_PASSWORD=<your password>
 conda activate conda-postgres
 ```
 
-11. Migrate database
+12. Migrate database
 ```sh
-python manage.py makemigrations tagger
+python manage.py makemigrations
 python manage.py migrate
 ```
 
-12. Create superuser
+13. Create superuser
 ```sh
 python manage.py createsuperuser
 ```
 
-13. Start the app
+14. Start the app
 ```sh
 python manage.py runserver
 ```
 
-14. Navigate and login into the admin page to upload the fixtures for populating the database.
+15. Navigate and login into the admin page to upload the fixtures for populating the database.
 
 ### Usage instructions
 
@@ -132,3 +132,8 @@ psql
 psql
 CREATE EXTENSION IF NOT EXISTS <extension name>
 ``
+
+### How to rollback migrations
+```sh
+python manage.py migrate tagger zero
+```

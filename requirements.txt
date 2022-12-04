@@ -1,2 +1,2 @@
-postgresql==12.9
+postgresql==15.1
 nodejs==17.9.0

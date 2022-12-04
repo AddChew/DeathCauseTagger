@@ -2,6 +2,8 @@ from django.contrib import admin
 from import_export import resources
 from import_export.admin import ExportActionMixin, ImportExportModelAdmin, ExportMixin
 from .models import *
+from django.contrib.auth.models import User
+from django.contrib.auth.admin import UserAdmin
 
 
 class ExportModelAdmin(ExportMixin, admin.ModelAdmin):
@@ -152,9 +154,10 @@ class PeriodAdmin(ImportExportModelAdmin, ExportActionMixin):
         )
     resource_class = PeriodResource
 
+admin.site.unregister(User)
 
 @admin.register(User)
-class UserAdmin(admin.ModelAdmin):
+class UserAdmin(UserAdmin):
     """
         Admin class for User Model
     """
