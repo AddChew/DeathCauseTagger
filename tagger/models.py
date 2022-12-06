@@ -43,7 +43,10 @@ class Mapping(models.Model):
 
     class Meta:
         ordering = ("icd__code",)
-        indexes = [GinIndex(fields=['search_vector'])]
+        indexes = [
+            GinIndex(fields=['search_vector']), 
+            GinIndex(name='tagger_mapping_desc_gin_idx', fields=['description'], opclasses=['gin_trgm_ops'])
+        ]
 
     def __str__(self):
         return f"{self.description} - {self.icd.code}"
