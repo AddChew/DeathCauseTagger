@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.postgres.search import SearchVectorField
 
 
 class Category(models.Model):
@@ -37,6 +38,7 @@ class Mapping(models.Model):
     """
     description = models.CharField(max_length = 200, unique = True)
     icd = models.ForeignKey(ICD, on_delete = models.CASCADE, related_name = "mappings")
+    search_vector = SearchVectorField(null = True)
 
     class Meta:
         ordering = ("icd__code",)
