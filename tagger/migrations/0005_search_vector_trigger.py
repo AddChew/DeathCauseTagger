@@ -44,11 +44,83 @@ class Migration(migrations.Migration):
             END;
             $$;
 
+            CREATE OR REPLACE FUNCTION update_icd()
+            RETURNS TRIGGER
+            LANGUAGE plpgsql AS $$
+            BEGIN
+                UPDATE tagger_mapping SET search_vector = NULL
+                WHERE icd_id = NEW.id;
+                RETURN NEW;
+            END;
+            $$;
+
+            CREATE OR REPLACE FUNCTION delete_icd()
+            RETURNS TRIGGER
+            LANGUAGE plpgsql AS $$
+            BEGIN
+                UPDATE tagger_mapping SET search_vector = NULL
+                WHERE icd_id = OLD.id;
+                RETURN OLD;
+            END;
+            $$;
+
+            CREATE OR REPLACE FUNCTION update_category()
+            RETURNS TRIGGER
+            LANGUAGE plpgsql AS $$
+            BEGIN
+                UPDATE tagger_mapping
+                SET search_vector = NULL
+                FROM tagger_mapping a
+                INNER JOIN tagger_icd b
+                ON a.icd_id = b.id
+                WHERE b.category_id = NEW.id;
+                RETURN NEW;
+            END;
+            $$;
+
+            CREATE OR REPLACE FUNCTION delete_category()
+            RETURNS TRIGGER
+            LANGUAGE plpgsql AS $$
+            BEGIN
+                UPDATE tagger_mapping a 
+                SET search_vector = NULL
+                FROM tagger_mapping a
+                INNER JOIN tagger_icd b
+                ON a.icd_id = b.id
+                WHERE b.category_id = OLD.id;
+                RETURN OLD;
+            END;
+            $$;
+
             CREATE TRIGGER mapping_update_trigger
             BEFORE INSERT OR UPDATE OF description, icd_id, search_vector
             ON tagger_mapping
             FOR EACH ROW EXECUTE PROCEDURE
             update_mapping_search_vector();
+
+            CREATE TRIGGER icd_update_trigger
+            AFTER UPDATE OF code, description, category_id 
+            ON tagger_icd
+            FOR EACH ROW EXECUTE PROCEDURE 
+            update_icd();
+
+            CREATE TRIGGER icd_delete_trigger
+            AFTER DELETE
+            ON tagger_icd
+            FOR EACH ROW EXECUTE PROCEDURE 
+            delete_icd();
+
+            CREATE TRIGGER category_update_trigger
+            AFTER UPDATE OF description
+            ON tagger_category
+            FOR EACH ROW EXECUTE PROCEDURE 
+            update_category();
+
+            CREATE TRIGGER category_delete_trigger
+            AFTER DELETE
+            ON tagger_category
+            FOR EACH ROW EXECUTE PROCEDURE 
+            delete_category();
 
             UPDATE tagger_mapping SET search_vector = NULL;
             """,
@@ -56,7 +128,23 @@ class Migration(migrations.Migration):
             DROP TRIGGER IF EXISTS mapping_update_trigger
             ON tagger_mapping;
 
+            DROP TRIGGER IF EXISTS icd_update_trigger
+            ON tagger_icd;   
+
+            DROP TRIGGER IF EXISTS icd_delete_trigger
+            ON tagger_icd;
+
+            DROP TRIGGER IF EXISTS category_update_trigger
+            ON tagger_category;   
+
+            DROP TRIGGER IF EXISTS category_delete_trigger
+            ON tagger_category;     
+
             DROP FUNCTION update_mapping_search_vector();
+            DROP FUNCTION update_icd();
+            DROP FUNCTION delete_icd();
+            DROP FUNCTION update_category();
+            DROP FUNCTION delete_category();
             """,
         ),
         # migrations.RunPython(
