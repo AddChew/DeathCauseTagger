@@ -40,8 +40,15 @@ pg_ctl -D postgres -l logfile start
 
 8. Create database superuser
 
+with prompt
 ```sh
-createuser --encrypted --pwprompt <your username>
+createuser --encrypted --pwprompt <your username> --createdb
+```
+
+without prompt (use this in deployment script)
+```sh
+createdb
+psql -c "create user <your username> with encrypted password '<your password>' createdb;"
 ```
 
 10. Create project database
