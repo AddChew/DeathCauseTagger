@@ -6,7 +6,7 @@ test = 'CORONARY HEART DISEASE'
 # Similarity
 out = Mapping.objects.annotate(
     similarity=TrigramSimilarity('description', test),
-).filter(similarity__gt=0.3).order_by('-similarity')[:10]
+).filter(similarity__gt=0.3).order_by('-similarity').values_list('icd__code')[:10]
 
 # # Distance
 # Author.objects.annotate(

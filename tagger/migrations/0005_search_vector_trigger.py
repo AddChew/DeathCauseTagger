@@ -1,7 +1,8 @@
 from django.contrib.postgres.search import SearchVector
 from django.db import migrations
 
-
+# TODO: Should just create search vector based on mapping description
+# TODO: For the others like icd code and category description, should just use an OR operator to stack the query
 # def compute_search_vector(apps, schema_editor):
 #     Mapping = apps.get_model("tagger", "Mapping")
 #     Mapping.objects.update(

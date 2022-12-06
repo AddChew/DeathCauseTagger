@@ -36,3 +36,24 @@ out = Mapping.objects.annotate(
 # https://testdriven.io/blog/django-search/#search-vector-field
 
 # 2. Create a database index, i.e. GinIndex
+
+
+# Search with GinIndex
+out = Mapping.objects.filter(search_vector='CORONARY HEART DISEASE').values_list('icd__code', 'icd__description')
+
+search_query = SearchQuery('CORONARY HEART DISEASE') | SearchQuery('CHRONIC HEART DISEASE')
+# search_query = SearchQuery('CORONARY HEART DISEASE') & SearchQuery('CHRONIC HEART DISEASE')
+# search_query = ~SearchQuery('CORONARY HEART DISEASE')
+out = Mapping.objects.filter(search_vector=search_query) # SearchQuery allows you to combine queries with an AND/OR/NOT operator
+
+# Rank and Order
+from django.contrib.postgres.search import SearchQuery, SearchRank
+from django.db.models import F
+
+query = SearchQuery('CORONARY HEART DISEASE')
+
+# The first argument should be a search vector field. It can be either a SearchVector instance or an F() expression. 
+# A SearchVector instance computes search vectors from other columns on-the-fly. 
+# On the other hand, an F() expression refers an existing search vector field in a model.
+rank = SearchRank(F('search_vector'), query)
+out = Mapping.objects.annotate(rank=rank).filter(search_vector=query).order_by('-rank')

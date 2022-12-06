@@ -146,6 +146,12 @@ Rollback all migrations
 python manage.py migrate tagger zero
 ```
 
+### How to see the sql of migrations
+```sh
+# python manage.py sqlmigrate tagger 0004
+python manage.py sqlmigrate <app name> <migration number>
+```
+
 ### How to connect to postgres db as another user
 ```sh
 psql -d <database name> -U <your username>
