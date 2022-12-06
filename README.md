@@ -134,6 +134,14 @@ CREATE EXTENSION IF NOT EXISTS <extension name>
 ``
 
 ### How to rollback migrations
+Rollback to specific migration
+```sh
+# python manage.py migrate tagger 0004
+# python manage.py migrate tagger 0004_mapping_tagger_mapp_search__3cf9c6_gin
+python manage.py migrate tagger <migration number or name>
+```
+
+Rollback all migrations
 ```sh
 python manage.py migrate tagger zero
 ```
