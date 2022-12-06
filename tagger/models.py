@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.postgres.search import SearchVectorField
+from django.contrib.postgres.indexes import GinIndex
 
 
 class Category(models.Model):
@@ -42,6 +43,7 @@ class Mapping(models.Model):
 
     class Meta:
         ordering = ("icd__code",)
+        indexes = [GinIndex(fields=['search_vector'])]
 
     def __str__(self):
         return f"{self.description} - {self.icd.code}"

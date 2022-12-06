@@ -1,7 +1,6 @@
 __pycache__ 
 *.pyc
 *.ipynb
-**/migrations/0002_annotation_category_icd_mapping_period.py
 postgres/
 **/logfile
 *.dump
