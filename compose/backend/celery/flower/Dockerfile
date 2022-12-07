@@ -29,6 +29,6 @@ COPY ./compose/backend/celery/flower/start /start-celeryflower
 RUN sed -i 's/\r$//g' /start-celeryflower
 RUN chmod +x /start-celeryflower
 
-WORKDIR /app
+WORKDIR /app/backend
 
 ENTRYPOINT ["/entrypoint"]

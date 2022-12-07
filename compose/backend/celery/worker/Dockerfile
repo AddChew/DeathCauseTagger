@@ -26,6 +26,6 @@ COPY ./compose/backend/celery/worker/start /start-celeryworker
 RUN sed -i 's/\r$//g' /start-celeryworker
 RUN chmod +x /start-celeryworker
 
-WORKDIR /app
+WORKDIR /app/backend
 
 ENTRYPOINT ["/entrypoint"]

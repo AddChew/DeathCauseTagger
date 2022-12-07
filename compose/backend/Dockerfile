@@ -26,6 +26,6 @@ COPY ./compose/backend/start /start
 RUN sed -i 's/\r$//g' /start
 RUN chmod +x /start
 
-WORKDIR /app
+WORKDIR /app/backend
 
 ENTRYPOINT ["/entrypoint"]
