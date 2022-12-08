@@ -60,7 +60,7 @@ services:
     build:
       context: .
       dockerfile: ./compose/backend/celery/flower/Dockerfile
-    command: /start-flower
+    command: /start-celeryflower
     volumes:
       - .:/app
     env_file:

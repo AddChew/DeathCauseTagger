@@ -15,8 +15,11 @@ RUN apt-get update \
   && rm -rf /var/lib/apt/lists/*
 
 # Requirements are installed here to ensure they will be cached.
-COPY ./compose/backend/requirements_django.txt /requirements.txt
-RUN pip install -r /requirements.txt
+COPY ./compose/backend/requirements_base.txt /requirements_base.txt
+RUN pip install -r /requirements_base.txt
+
+COPY ./compose/backend/requirements_django.txt /requirements_django.txt
+RUN pip install -r /requirements_django.txt
 
 COPY ./compose/backend/entrypoint /entrypoint
 RUN sed -i 's/\r$//g' /entrypoint
