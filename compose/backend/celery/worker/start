@@ -3,4 +3,4 @@
 set -o errexit
 set -o nounset
 
-celery -A icdtagger worker -l INFO
+watchfiles --filter python 'celery -A icdtagger worker -l INFO'

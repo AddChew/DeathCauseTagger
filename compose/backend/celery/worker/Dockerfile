@@ -18,6 +18,9 @@ RUN apt-get update \
 COPY ./compose/backend/requirements_base.txt  /requirements_base.txt
 RUN pip install -r /requirements_base.txt
 
+COPY ./compose/backend/celery/worker/requirements_worker.txt /requirements_worker.txt
+RUN pip install -r /requirements_worker.txt
+
 COPY ./compose/backend/entrypoint /entrypoint
 RUN sed -i 's/\r$//g' /entrypoint
 RUN chmod +x /entrypoint

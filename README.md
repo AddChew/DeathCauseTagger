@@ -17,6 +17,9 @@ cd DeathCauseTagger
 3. Build docker image
 ```sh
 docker-compose build
+
+# Alternatively, can run the command below which performs both steps 3 and 4.
+# docker-compose up -d --build
 ```
 
 4. Spin up the docker containers
