@@ -31,7 +31,11 @@ docker-compose up -d
 
 1. Command to view docker logs
 ```sh
+# Command to view the logs from all containers
 docker-compose logs -f
+
+# Command to view the logs from specific containers
+docker-compose logs <service-name>
 ```
 
 2. Command to enter the shell of a specific container that is up and running
