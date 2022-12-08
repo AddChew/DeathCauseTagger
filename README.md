@@ -47,3 +47,36 @@ docker-compose exec <service-name> bash
 ```sh
 docker-compose down
 ```
+
+4. Commands to clean up resources (i.e. images, containers, volumes and networks)
+```sh
+# Command to clean up all dangling resources
+docker system prune
+
+# Command to clean up all resources
+docker system prune -a
+
+# Command to list all images
+docker images -a
+
+# Command to remove specific images
+docker rmi <image1> <image2>
+
+# Command to list all containers
+docker ps -a
+
+# Command to remove specific containers
+docker rm <id or name of container 1> <id or name of container 2>
+
+# Command to list all volumes
+docker volume ls
+
+# Command to remove specific volumes
+docker volume rm <volume name 1> <volume name 2>
+
+# Command to list all dangling volumes
+docker volume ls -f dangling=true
+
+# Command to remove all volumes
+docker volume prune
+```
