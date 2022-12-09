@@ -173,6 +173,12 @@ class NewCategoryAdmin(admin.ModelAdmin):
 
 
 @admin.register(NewCode)
-class NewCategoryAdmin(admin.ModelAdmin):
+class NewCodeAdmin(admin.ModelAdmin):
     list_display = ("id", "description", "category", "created_by", "created_on", "modified_by", "modified_on")
+    ordering = ('pk',)
+
+
+@admin.register(NewPeriod)
+class NewPeriodAdmin(admin.ModelAdmin):
+    list_display = ("id", "icd_input", "threshold", "icd_below", "icd_equal", "icd_above", "created_by", "created_on", "modified_by", "modified_on")
     ordering = ('pk',)

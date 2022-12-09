@@ -91,6 +91,7 @@ class NewCategory(models.Model):
     """
     description = models.CharField(max_length = 200, unique = True)
     search_vector = SearchVectorField(null = True)
+
     created_by = models.ForeignKey(User, on_delete = models.CASCADE, related_name = "created_categories")
     created_on = models.DateTimeField(auto_now_add = True)
     modified_by = models.ForeignKey(User, on_delete = models.CASCADE, related_name = "modified_categories")
@@ -111,6 +112,7 @@ class NewCode(models.Model):
     """
     description = models.CharField(max_length = 4, unique = True)
     category = models.ForeignKey(NewCategory, on_delete = models.CASCADE, related_name = "codes")
+
     created_by = models.ForeignKey(User, on_delete = models.CASCADE, related_name = "created_codes")
     created_on = models.DateTimeField(auto_now_add = True)
     modified_by = models.ForeignKey(User, on_delete = models.CASCADE, related_name = "modified_codes")
@@ -118,3 +120,20 @@ class NewCode(models.Model):
 
     def __str__(self):
         return self.description
+
+
+class NewPeriod(models.Model):
+    """
+        New Period Model
+    """
+    icd_input =  models.OneToOneField(NewCode, on_delete = models.CASCADE, related_name = "period") 
+    threshold = models.PositiveSmallIntegerField()
+
+    icd_below = models.ForeignKey(NewCode, on_delete = models.CASCADE, related_name = "below") 
+    icd_equal = models.ForeignKey(NewCode, on_delete = models.CASCADE, related_name = "equal")
+    icd_above = models.ForeignKey(NewCode, on_delete = models.CASCADE, related_name = "above")
+
+    created_by = models.ForeignKey(User, on_delete = models.CASCADE, related_name = "created_periods")
+    created_on = models.DateTimeField(auto_now_add = True)
+    modified_by = models.ForeignKey(User, on_delete = models.CASCADE, related_name = "modified_periods")
+    modified_on = models.DateTimeField(auto_now = True)
