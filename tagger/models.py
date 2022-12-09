@@ -103,3 +103,18 @@ class NewCategory(models.Model):
 
     def __str__(self):
         return self.description
+
+
+class NewCode(models.Model):
+    """
+        New Code Model 
+    """
+    description = models.CharField(max_length = 4, unique = True)
+    category = models.ForeignKey(NewCategory, on_delete = models.CASCADE, related_name = "codes")
+    created_by = models.ForeignKey(User, on_delete = models.CASCADE, related_name = "created_codes")
+    created_on = models.DateTimeField(auto_now_add = True)
+    modified_by = models.ForeignKey(User, on_delete = models.CASCADE, related_name = "modified_codes")
+    modified_on = models.DateTimeField(auto_now = True)
+
+    def __str__(self):
+        return self.description

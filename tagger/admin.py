@@ -170,3 +170,9 @@ class UserAdmin(UserAdmin):
 class NewCategoryAdmin(admin.ModelAdmin):
     list_display = ("id", "description", "created_by", "created_on", "modified_by", "modified_on")
     ordering = ('pk',)
+
+
+@admin.register(NewCode)
+class NewCategoryAdmin(admin.ModelAdmin):
+    list_display = ("id", "description", "category", "created_by", "created_on", "modified_by", "modified_on")
+    ordering = ('pk',)
