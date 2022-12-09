@@ -154,8 +154,8 @@ class PeriodAdmin(ImportExportModelAdmin, ExportActionMixin):
         )
     resource_class = PeriodResource
 
-admin.site.unregister(User)
 
+admin.site.unregister(User)
 @admin.register(User)
 class UserAdmin(UserAdmin):
     """
@@ -164,3 +164,9 @@ class UserAdmin(UserAdmin):
     list_display = ("username", "date_joined", "is_superuser", "is_active", "last_login")
     list_filter = ("is_active", "is_superuser")
     search_fields = ("username__startswith",)
+
+
+@admin.register(NewCategory)
+class NewCategoryAdmin(admin.ModelAdmin):
+    list_display = ("id", "description", "created_by", "created_on", "modified_by", "modified_on")
+    ordering = ('pk',)

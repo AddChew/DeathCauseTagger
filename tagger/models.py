@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 from django.contrib.postgres.search import SearchVectorField
 from django.contrib.postgres.indexes import GinIndex
 
@@ -82,3 +83,23 @@ class Annotation(models.Model):
 
     def __str__(self):
         return f"{self.description} - {self.icd.code}"
+
+
+class NewCategory(models.Model):
+    """
+        New Category Model
+    """
+    description = models.CharField(max_length = 200, unique = True)
+    search_vector = SearchVectorField(null = True)
+    created_by = models.ForeignKey(User, on_delete = models.CASCADE, related_name = "created_categories")
+    created_on = models.DateTimeField(auto_now_add = True)
+    modified_by = models.ForeignKey(User, on_delete = models.CASCADE, related_name = "modified_categories")
+    modified_on = models.DateTimeField(auto_now = True)
+
+    class Meta:
+        indexes = [
+            GinIndex(fields=["search_vector"]),
+        ]
+
+    def __str__(self):
+        return self.description
