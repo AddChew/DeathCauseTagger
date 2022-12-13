@@ -18,15 +18,14 @@ def create_new_mappings(apps, schema_editor):
     new_mappings = []
     now = timezone.now()
     for mapping in mappings:
-        if mapping['is_option'] == 1:
-            mapping.pop('is_option')
+        mapping.update({'is_option': bool(mapping['is_option'])})
+        if mapping['is_option']:
             new_mappings.append(
-                NewMapping(**mapping, optioned_by = user, optioned_on = now, approved_by = user, approved_on = now, created_by = user, modified_by = user)
+                NewMapping(**mapping, optioned_by = user, optioned_on = now, is_approved = True, approved_by = user, approved_on = now, created_by = user, modified_by = user)
             )
         else:
-            mapping.pop('is_option')
             new_mappings.append(
-                NewMapping(**mapping, approved_by = user, approved_on = now, created_by = user, modified_by = user)
+                NewMapping(**mapping, is_approved = True, approved_by = user, approved_on = now, created_by = user, modified_by = user)
             )
     NewMapping.objects.bulk_create(new_mappings)
 

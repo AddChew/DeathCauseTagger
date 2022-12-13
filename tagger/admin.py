@@ -186,5 +186,6 @@ class NewPeriodAdmin(admin.ModelAdmin):
 
 @admin.register(NewMapping)
 class NewMappingAdmin(admin.ModelAdmin):
-    list_display = ("id", "description", "code", "optioned_by", "optioned_on", "approved_by", "approved_on", "created_by", "created_on", "modified_by", "modified_on")
+    list_display = ("id", "description", "code", "is_option", "optioned_by", "optioned_on", "is_approved", "approved_by", "approved_on", "created_by", "created_on", "modified_by", "modified_on")
+    list_filter = ("is_option", "is_approved")
     ordering = ('pk',)

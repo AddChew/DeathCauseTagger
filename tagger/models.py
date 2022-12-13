@@ -146,9 +146,11 @@ class NewMapping(models.Model):
     description = models.CharField(max_length = 200, unique = True)
     code = models.ForeignKey(NewCode, on_delete = models.CASCADE, related_name = "mappings")
 
+    is_option = models.BooleanField(default = False)
     optioned_by = models.ForeignKey(User, on_delete = models.CASCADE, related_name = "optioned_mappings", null = True, blank = True, default = None)
     optioned_on = models.DateTimeField(null = True, blank = True, default = None)
 
+    is_approved = models.BooleanField(default = False)
     approved_by = models.ForeignKey(User, on_delete = models.CASCADE, related_name = "approved_mappings", null = True, blank = True, default = None)
     approved_on = models.DateTimeField(null = True, blank = True, default = None)
  
