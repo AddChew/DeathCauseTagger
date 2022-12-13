@@ -182,3 +182,9 @@ class NewCodeAdmin(admin.ModelAdmin):
 class NewPeriodAdmin(admin.ModelAdmin):
     list_display = ("id", "icd_input", "threshold", "icd_below", "icd_equal", "icd_above", "created_by", "created_on", "modified_by", "modified_on")
     ordering = ('pk',)
+
+
+@admin.register(NewMapping)
+class NewMappingAdmin(admin.ModelAdmin):
+    list_display = ("id", "description", "code", "optioned_by", "optioned_on", "approved_by", "approved_on", "created_by", "created_on", "modified_by", "modified_on")
+    ordering = ('pk',)

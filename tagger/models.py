@@ -137,3 +137,30 @@ class NewPeriod(models.Model):
     created_on = models.DateTimeField(auto_now_add = True)
     modified_by = models.ForeignKey(User, on_delete = models.CASCADE, related_name = "modified_periods")
     modified_on = models.DateTimeField(auto_now = True)
+
+
+class NewMapping(models.Model):
+    """
+        New Mapping Model
+    """
+    description = models.CharField(max_length = 200, unique = True)
+    code = models.ForeignKey(NewCode, on_delete = models.CASCADE, related_name = "mappings")
+
+    optioned_by = models.ForeignKey(User, on_delete = models.CASCADE, related_name = "optioned_mappings", null = True, blank = True, default = None)
+    optioned_on = models.DateTimeField(null = True, blank = True, default = None)
+
+    approved_by = models.ForeignKey(User, on_delete = models.CASCADE, related_name = "approved_mappings", null = True, blank = True, default = None)
+    approved_on = models.DateTimeField(null = True, blank = True, default = None)
+ 
+    created_by = models.ForeignKey(User, on_delete = models.CASCADE, related_name = "created_mappings")
+    created_on = models.DateTimeField(auto_now_add = True)
+    modified_by = models.ForeignKey(User, on_delete = models.CASCADE, related_name = "modified_mappings")
+    modified_on = models.DateTimeField(auto_now = True)
+
+    search_vector = SearchVectorField(null = True)
+
+    class Meta:
+        indexes = [
+            GinIndex(fields=['search_vector']), 
+            GinIndex(name='tagger_newmapping_desc_gin_idx', fields=['description'], opclasses=['gin_trgm_ops'])
+        ]
