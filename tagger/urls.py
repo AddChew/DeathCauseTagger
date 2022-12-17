@@ -1,6 +1,8 @@
-from django.urls import path
-from . import views
+from django.urls import re_path
+from tagger.views import RegisterView
+
+app_name = 'tagger'
 
 urlpatterns = [
-    path('', views.upload, name = "upload"),
+    re_path(r'^register/$', RegisterView.as_view(), name = 'register')
 ]

@@ -1,8 +1,9 @@
-from django.shortcuts import render
-# from django.http import HttpResponseRedirect
-# from django.urls import reverse
+from rest_framework import generics
+from django.contrib.auth import get_user_model
+
+from tagger.serializers import UserSerializer
 
 
-# Upload Page
-def upload(request):
-    return render(request, "tagger/upload.html")
+class RegisterView(generics.CreateAPIView):
+    queryset = get_user_model().objects.all()
+    serializer_class = UserSerializer
