@@ -32,8 +32,6 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'tagger',
-    'import_export',
     'django.contrib.postgres',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -41,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'tagger',
 ]
 
 MIDDLEWARE = [
@@ -77,14 +76,6 @@ WSGI_APPLICATION = 'icdtagger.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
-# # Connect to SQLite3 Database
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
-
 # Connect to PostgreSQL Database
 DATABASES = {
     'default': {
@@ -96,6 +87,10 @@ DATABASES = {
         'PORT': ''
     }
 }
+
+# Custom user model
+# https://docs.djangoproject.com/en/4.1/topics/auth/customizing/#extending-the-existing-user-model
+AUTH_USER_MODEL = 'tagger.User'
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
@@ -139,9 +134,3 @@ STATIC_URL = '/static/'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-
-# django-import-export
-# https://django-import-export.readthedocs.io/en/stable/index.html
-
-IMPORT_EXPORT_USE_TRANSACTIONS = True
