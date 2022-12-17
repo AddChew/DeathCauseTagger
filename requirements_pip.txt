@@ -1,6 +1,4 @@
 Django==3.2.9
-django_import_export==2.6.1
-prometheus-client==0.14.1
 psycopg2>=2.8
 djangorestframework==3.14.0
 python-dotenv==0.21.0
