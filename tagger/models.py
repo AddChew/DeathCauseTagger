@@ -87,3 +87,6 @@ class Mapping(models.Model):
             GinIndex(fields=['search_vector']), 
             GinIndex(name='tagger_newmapping_desc_gin_idx', fields=['description'], opclasses=['gin_trgm_ops'])
         ]
+
+    def __str__(self):
+        return f'{self.description}: {self.code}'
