@@ -1,23 +1,8 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser
 from django.contrib.postgres.search import SearchVectorField
 from django.contrib.postgres.indexes import GinIndex
-from tagger.managers import UserManager
 
-
-class User(AbstractUser):
-    """
-        Custom User Model
-    """
-    first_name = None
-    last_name = None
-    email = None
-
-    REQUIRED_FIELDS = []
-    objects = UserManager()
-
-    def __str__(self):
-        return self.username
+from authentication.models import User
 
 
 class Category(models.Model):

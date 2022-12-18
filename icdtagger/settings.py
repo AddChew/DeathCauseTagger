@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'authentication',
     'tagger',
 ]
 
@@ -63,7 +64,7 @@ REST_FRAMEWORK = {
 }
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': datetime.timedelta(minutes = 60),
+    'ACCESS_TOKEN_LIFETIME': datetime.timedelta(minutes = 15),
     'REFRESH_TOKEN_LIFETIME': datetime.timedelta(days = 1),
     'USER_ID_CLAIM': 'id',
 }
@@ -106,7 +107,7 @@ DATABASES = {
 
 # Custom user model
 # https://docs.djangoproject.com/en/4.1/topics/auth/customizing/#extending-the-existing-user-model
-AUTH_USER_MODEL = 'tagger.User'
+AUTH_USER_MODEL = 'authentication.User'
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators

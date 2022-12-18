@@ -1,21 +1,5 @@
 from tagger.models import *
 from django.contrib import admin
-from django.contrib.auth.admin import UserAdmin
-
-
-@admin.register(User)
-class UserAdmin(UserAdmin):
-    """
-        Admin class for User Model
-    """
-    list_display = ("username", "date_joined", "is_staff", "is_superuser", "is_active", "last_login")
-    list_filter = ("is_staff", "is_superuser", "is_active")
-    search_fields = ("username__startswith",)
-
-    fieldsets = (
-        (None, {'fields': ('username', 'password')}),
-        ('Permissions', {'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')}),
-    )
 
 
 @admin.register(Category)

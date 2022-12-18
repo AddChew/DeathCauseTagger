@@ -16,7 +16,11 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import re_path, include
 
+
+VERSION_PREFIX = 'v1/api'
+
+
 urlpatterns = [
     re_path('^admin/', admin.site.urls),
-    re_path('^v1/api/', include("tagger.urls", namespace = 'v1')),
+    re_path(f'^{VERSION_PREFIX}/auth/', include("authentication.urls", namespace = 'v1')),
 ]
