@@ -19,8 +19,12 @@ from django.urls import re_path, include
 
 VERSION_PREFIX = 'v1/api'
 
+v1_urlpatterns = [
+    re_path(f'^auth/', include(("authentication.urls", "authentication"), namespace = 'auth')),
+    re_path(f'^tagger/', include(("tagger.urls", "tagger"), namespace = 'tagger')),
+]
 
 urlpatterns = [
     re_path('^admin/', admin.site.urls),
-    re_path(f'^{VERSION_PREFIX}/auth/', include("authentication.urls", namespace = 'v1')),
+    re_path(fr'^{VERSION_PREFIX}/', include((v1_urlpatterns, 'v1'), namespace = 'v1'))
 ]

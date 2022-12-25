@@ -1,10 +1,9 @@
 from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-
 from django.contrib.auth import get_user_model
 
 
-class UserSerializer(serializers.ModelSerializer):
+class RegisterSerializer(serializers.ModelSerializer):
 
     password1 = serializers.CharField(write_only = True, style = {'input_type': 'password'})
     password2 = serializers.CharField(write_only = True, style = {'input_type': 'password'})
@@ -23,7 +22,7 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = get_user_model()
         fields= (
-            'id', 'username', 'password1', 'password2'
+            'username', 'password1', 'password2'
         )
         read_only_fields = ('id',)
 
@@ -33,7 +32,7 @@ class LoginSerializer(TokenObtainPairSerializer):
     @classmethod
     def get_token(cls, user):
         token = super().get_token(user)
-        user_data = UserSerializer(user).data
+        user_data = RegisterSerializer(user).data
         for key, value in user_data.items():
             if key != 'id':
                 token[key]= value

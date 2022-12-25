@@ -2,7 +2,6 @@
 
 from django.conf import settings
 import django.contrib.postgres.indexes
-import django.contrib.postgres.search
 from django.db import migrations, models
 import django.db.models.deletion
 from django.contrib.postgres.operations import TrigramExtension
@@ -23,7 +22,6 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('description', models.CharField(max_length=200, unique=True)),
-                ('search_vector', django.contrib.postgres.search.SearchVectorField(null=True)),
                 ('created_on', models.DateTimeField(auto_now_add=True)),
                 ('modified_on', models.DateTimeField(auto_now=True)),
                 ('created_by', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='created_categories', to=settings.AUTH_USER_MODEL)),
@@ -71,7 +69,6 @@ class Migration(migrations.Migration):
                 ('approved_on', models.DateTimeField(blank=True, default=None, null=True)),
                 ('created_on', models.DateTimeField(auto_now_add=True)),
                 ('modified_on', models.DateTimeField(auto_now=True)),
-                ('search_vector', django.contrib.postgres.search.SearchVectorField(null=True)),
                 ('approved_by', models.ForeignKey(blank=True, default=None, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='approved_mappings', to=settings.AUTH_USER_MODEL)),
                 ('code', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='mappings', to='tagger.code')),
                 ('created_by', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='created_mappings', to=settings.AUTH_USER_MODEL)),
@@ -81,14 +78,6 @@ class Migration(migrations.Migration):
         ),
         migrations.AddIndex(
             model_name='mapping',
-            index=django.contrib.postgres.indexes.GinIndex(fields=['search_vector'], name='tagger_mapp_search__3cf9c6_gin'),
-        ),
-        migrations.AddIndex(
-            model_name='mapping',
             index=django.contrib.postgres.indexes.GinIndex(fields=['description'], name='tagger_newmapping_desc_gin_idx', opclasses=['gin_trgm_ops']),
-        ),
-        migrations.AddIndex(
-            model_name='category',
-            index=django.contrib.postgres.indexes.GinIndex(fields=['search_vector'], name='tagger_cate_search__af7247_gin'),
         ),
     ]

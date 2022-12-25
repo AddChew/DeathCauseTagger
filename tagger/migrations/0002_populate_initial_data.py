@@ -67,7 +67,7 @@ def populate_initial_data(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('tagger', '0002_search_vector_trigger'),
+        ('tagger', '0001_initial'),
     ]
 
     operations = [

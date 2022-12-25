@@ -1,7 +1,5 @@
 from django.db import models
-from django.contrib.postgres.search import SearchVectorField
 from django.contrib.postgres.indexes import GinIndex
-
 from authentication.models import User
 
 
@@ -10,7 +8,6 @@ class Category(models.Model):
         Category Model
     """
     description = models.CharField(max_length = 200, unique = True)
-    search_vector = SearchVectorField(null = True)
 
     created_by = models.ForeignKey(User, on_delete = models.CASCADE, related_name = "created_categories")
     created_on = models.DateTimeField(auto_now_add = True)
@@ -19,9 +16,6 @@ class Category(models.Model):
 
     class Meta:
         verbose_name_plural = "Categories"
-        indexes = [
-            GinIndex(fields=["search_vector"]),
-        ]
 
     def __str__(self):
         return self.description
@@ -80,11 +74,8 @@ class Mapping(models.Model):
     modified_by = models.ForeignKey(User, on_delete = models.CASCADE, related_name = "modified_mappings")
     modified_on = models.DateTimeField(auto_now = True)
 
-    search_vector = SearchVectorField(null = True)
-
     class Meta:
         indexes = [
-            GinIndex(fields=['search_vector']), 
             GinIndex(name='tagger_newmapping_desc_gin_idx', fields=['description'], opclasses=['gin_trgm_ops'])
         ]
 
