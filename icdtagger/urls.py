@@ -21,10 +21,10 @@ VERSION_PREFIX = 'v1/api'
 
 v1_urlpatterns = [
     re_path(f'^auth/', include(("authentication.urls", "authentication"), namespace = 'auth')),
-    re_path(f'^tagger/', include(("tagger.urls", "tagger"), namespace = 'tagger')),
+    # re_path(f'^tagger/', include(("tagger.urls", "tagger"), namespace = 'tagger')),
 ]
 
 urlpatterns = [
     re_path('^admin/', admin.site.urls),
-    re_path(fr'^{VERSION_PREFIX}/', include((v1_urlpatterns, 'v1'), namespace = 'v1'))
+    # re_path(fr'^{VERSION_PREFIX}/', include((v1_urlpatterns, 'v1'), namespace = 'v1'))
 ]

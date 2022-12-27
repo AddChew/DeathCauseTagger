@@ -1,18 +1,27 @@
 from django.db import models
 from django.contrib.postgres.indexes import GinIndex
+from tagger.utils import BaseModel
 from authentication.models import User
 
 
-class Category(models.Model):
+class Status(BaseModel):
+    """
+        Status Model
+    """
+    description = models.CharField(max_length = 50, unique = True)
+
+    class Meta:
+        verbose_name_plural = "Statuses"
+
+    def __str__(self):
+        return self.description
+
+
+class Category(BaseModel):
     """
         Category Model
     """
     description = models.CharField(max_length = 200, unique = True)
-
-    created_by = models.ForeignKey(User, on_delete = models.CASCADE, related_name = "created_categories")
-    created_on = models.DateTimeField(auto_now_add = True)
-    modified_by = models.ForeignKey(User, on_delete = models.CASCADE, related_name = "modified_categories")
-    modified_on = models.DateTimeField(auto_now = True)
 
     class Meta:
         verbose_name_plural = "Categories"
@@ -21,23 +30,34 @@ class Category(models.Model):
         return self.description
 
 
-class Code(models.Model):
+class DeathCause(BaseModel):
+    """
+        Death Cause Model
+    """
+    description = models.CharField(max_length = 200, unique = True)
+
+    class Meta:
+        verbose_name_plural = "Death Causes"
+        indexes = [
+            GinIndex(name = 'tagger_deathcause_desc_gin_idx', fields = ['description'], opclasses = ['gin_trgm_ops'])
+        ]
+
+    def __str__(self):
+        return self.description
+
+
+class Code(BaseModel):
     """
         Code Model 
     """
     description = models.CharField(max_length = 4, unique = True)
     category = models.ForeignKey(Category, on_delete = models.CASCADE, related_name = "codes")
 
-    created_by = models.ForeignKey(User, on_delete = models.CASCADE, related_name = "created_codes")
-    created_on = models.DateTimeField(auto_now_add = True)
-    modified_by = models.ForeignKey(User, on_delete = models.CASCADE, related_name = "modified_codes")
-    modified_on = models.DateTimeField(auto_now = True)
-
     def __str__(self):
         return self.description
 
 
-class Period(models.Model):
+class Period(BaseModel):
     """
         Period Model
     """
@@ -48,36 +68,21 @@ class Period(models.Model):
     icd_equal = models.ForeignKey(Code, on_delete = models.CASCADE, related_name = "equal")
     icd_above = models.ForeignKey(Code, on_delete = models.CASCADE, related_name = "above")
 
-    created_by = models.ForeignKey(User, on_delete = models.CASCADE, related_name = "created_periods")
-    created_on = models.DateTimeField(auto_now_add = True)
-    modified_by = models.ForeignKey(User, on_delete = models.CASCADE, related_name = "modified_periods")
-    modified_on = models.DateTimeField(auto_now = True)
 
-
-class Mapping(models.Model):
+class Mapping(BaseModel):
     """
         Mapping Model
     """
-    description = models.CharField(max_length = 200, unique = True)
+    description = models.ForeignKey(DeathCause, on_delete = models.CASCADE, related_name = "mappings")
     code = models.ForeignKey(Code, on_delete = models.CASCADE, related_name = "mappings")
 
     is_option = models.BooleanField(default = False)
-    optioned_by = models.ForeignKey(User, on_delete = models.CASCADE, related_name = "optioned_mappings", null = True, blank = True, default = None)
-    optioned_on = models.DateTimeField(null = True, blank = True, default = None)
+    is_option_updated_by = models.ForeignKey(User, on_delete = models.CASCADE, related_name = "is_option_updated_mappings", null = True, blank = True, default = None)
+    is_option_updated_on = models.DateTimeField(null = True, blank = True, default = None)
 
-    is_approved = models.BooleanField(default = False)
-    approved_by = models.ForeignKey(User, on_delete = models.CASCADE, related_name = "approved_mappings", null = True, blank = True, default = None)
-    approved_on = models.DateTimeField(null = True, blank = True, default = None)
+    status = models.ForeignKey(Status, on_delete = models.CASCADE, related_name = "mappings", to_field = "description", default = "PENDING REVIEW")
+    status_updated_by = models.ForeignKey(User, on_delete = models.CASCADE, related_name = "status_updated_mappings", null = True, blank = True, default = None)
+    status_updated_on = models.DateTimeField(null = True, blank = True, default = None)
  
-    created_by = models.ForeignKey(User, on_delete = models.CASCADE, related_name = "created_mappings")
-    created_on = models.DateTimeField(auto_now_add = True)
-    modified_by = models.ForeignKey(User, on_delete = models.CASCADE, related_name = "modified_mappings")
-    modified_on = models.DateTimeField(auto_now = True)
-
-    class Meta:
-        indexes = [
-            GinIndex(name='tagger_newmapping_desc_gin_idx', fields=['description'], opclasses=['gin_trgm_ops'])
-        ]
-
     def __str__(self):
         return f'{self.description}: {self.code}'
