@@ -1,9 +1,7 @@
-import os
 from django.db import models
+from django.contrib import admin
 from authentication.models import User
-
-
-SUPERUSER_USERNAME = os.environ.get('DJANGO_SUPERUSER_USERNAME', 'superuser')
+from tagger import constants
 
 
 class CustomForeignKey(models.ForeignKey):
@@ -27,11 +25,24 @@ class BaseModel(models.Model):
     """
         Base Model for inheritance
     """
-    created_by = CustomForeignKey(User, on_delete = models.CASCADE, related_name = "created_%(class)ss", to_field = "username", default = SUPERUSER_USERNAME, editable = False)
+    created_by = CustomForeignKey(User, on_delete = models.CASCADE, related_name = "created_%(class)ss", to_field = "username", default = constants.SUPERUSER_USERNAME, editable = False)
     created_on = models.DateTimeField(auto_now_add = True)
 
-    updated_by = CustomForeignKey(User, on_delete = models.CASCADE, related_name = "modified_%(class)ss", to_field = "username", default = SUPERUSER_USERNAME, editable = False)
+    updated_by = CustomForeignKey(User, on_delete = models.CASCADE, related_name = "modified_%(class)ss", to_field = "username", default = constants.SUPERUSER_USERNAME, editable = False)
     updated_on = models.DateTimeField(auto_now = True)
 
     class Meta:
         abstract = True
+
+
+class BaseAdmin(admin.ModelAdmin):
+    list_display = ("description", "created_by", "created_on", "updated_by", "updated_on")
+    ordering = ("pk",)
+    search_fields = ("description__icontains",)
+
+    def save_model(self, request, obj, form, change):
+        if obj.fields_tracker.changed():
+            if not change:
+                obj.created_by = request.user
+            obj.updated_by = request.user
+            super().save_model(request, obj, form, change)

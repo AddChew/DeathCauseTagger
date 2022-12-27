@@ -1,18 +1,8 @@
-from tagger.models import *
+from django.db.models import Q
 from django.contrib import admin
-
-
-class BaseAdmin(admin.ModelAdmin):
-    list_display = ("description", "created_by", "created_on", "updated_by", "updated_on")
-    ordering = ("pk",)
-    search_fields = ("description__icontains",)
-
-    def save_model(self, request, obj, form, change):
-        if obj.fields_tracker.changed():
-            if not change:
-                obj.created_by = request.user
-            obj.updated_by = request.user
-            super().save_model(request, obj, form, change)
+from tagger.models import *
+from tagger import constants
+from tagger.utils import BaseAdmin
 
 
 @admin.register(Status)
@@ -62,7 +52,21 @@ class MappingAdmin(BaseAdmin):
         if obj.fields_tracker.has_changed('status_id'):
             obj.status_updated_by = request.user
 
+            if obj.status.description == constants.Status.ACTIVE:
+                rejected_status = Status.objects.get(description = constants.Status.REJECTED)
+                self.model.objects.filter(
+                    Q(description = obj.description) & Q(status__description = constants.Status.PENDING_REVIEW)
+                ).update(status = rejected_status)
+
         if obj.fields_tracker.has_changed('is_option'):
             obj.is_option_updated_by = request.user
 
+            if obj.is_option:
+                self.model.objects.filter(
+                    Q(code = obj.code) & Q(is_option = True)
+                ).update(is_option = False)
+
         super().save_model(request, obj, form, change)
+
+    # TODO: Admin actions to mass approve mappings
+    # TODO: Raise error if two share the same description

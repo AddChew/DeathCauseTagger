@@ -37,7 +37,7 @@
 #                 default = Value(99),
 #             )
 #         ).exclude(
-#             Q(search_rank = 99) | Q(is_option = False)
+#             Q(search_rank = 99) | Q(is_option = False) # TODO: add status active filter also
 #         ).order_by('search_rank', 'code')
 
 #     class Meta:

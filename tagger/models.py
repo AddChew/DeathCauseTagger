@@ -3,7 +3,8 @@ from django.contrib.postgres.indexes import GinIndex
 from model_utils import FieldTracker
 from model_utils.fields import MonitorField
 from authentication.models import User
-from tagger.utils import BaseModel, SUPERUSER_USERNAME
+from tagger import constants
+from tagger.utils import BaseModel
 
 
 class Status(BaseModel):
@@ -85,11 +86,11 @@ class Mapping(BaseModel):
     code = models.ForeignKey(Code, on_delete = models.CASCADE, related_name = "mappings")
 
     is_option = models.BooleanField(default = False)
-    is_option_updated_by = models.ForeignKey(User, on_delete = models.CASCADE, related_name = "is_option_updated_mappings", to_field = "username", default = SUPERUSER_USERNAME, editable = False)
+    is_option_updated_by = models.ForeignKey(User, on_delete = models.CASCADE, related_name = "is_option_updated_mappings", to_field = "username", default = constants.SUPERUSER_USERNAME, editable = False)
     is_option_updated_on = MonitorField(monitor = "is_option", editable = False)
 
-    status = models.ForeignKey(Status, on_delete = models.CASCADE, related_name = "mappings", to_field = "description", default = "PENDING REVIEW")
-    status_updated_by = models.ForeignKey(User, on_delete = models.CASCADE, related_name = "status_updated_mappings", to_field = "username", default = SUPERUSER_USERNAME, editable = False)
+    status = models.ForeignKey(Status, on_delete = models.CASCADE, related_name = "mappings", to_field = "description", default = constants.Status.PENDING_REVIEW)
+    status_updated_by = models.ForeignKey(User, on_delete = models.CASCADE, related_name = "status_updated_mappings", to_field = "username", default = constants.SUPERUSER_USERNAME, editable = False)
     status_updated_on = MonitorField(monitor = "status", editable = False)
 
     fields_tracker = FieldTracker()
