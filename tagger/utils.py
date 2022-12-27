@@ -1,5 +1,9 @@
+import os
 from django.db import models
 from authentication.models import User
+
+
+SUPERUSER_USERNAME = os.environ.get('DJANGO_SUPERUSER_USERNAME', 'superuser')
 
 
 class CustomForeignKey(models.ForeignKey):
@@ -23,9 +27,10 @@ class BaseModel(models.Model):
     """
         Base Model for inheritance
     """
-    created_by = CustomForeignKey(User, on_delete = models.CASCADE, related_name = "created_%(class)ss")
+    created_by = CustomForeignKey(User, on_delete = models.CASCADE, related_name = "created_%(class)ss", to_field = "username", default = SUPERUSER_USERNAME, editable = False)
     created_on = models.DateTimeField(auto_now_add = True)
-    updated_by = CustomForeignKey(User, on_delete = models.CASCADE, related_name = "modified_%(class)ss")
+
+    updated_by = CustomForeignKey(User, on_delete = models.CASCADE, related_name = "modified_%(class)ss", to_field = "username", default = SUPERUSER_USERNAME, editable = False)
     updated_on = models.DateTimeField(auto_now = True)
 
     class Meta:

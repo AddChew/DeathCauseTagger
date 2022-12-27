@@ -1,7 +1,9 @@
 from django.db import models
 from django.contrib.postgres.indexes import GinIndex
-from tagger.utils import BaseModel
+from model_utils import FieldTracker
+from model_utils.fields import MonitorField
 from authentication.models import User
+from tagger.utils import BaseModel, SUPERUSER_USERNAME
 
 
 class Status(BaseModel):
@@ -9,6 +11,7 @@ class Status(BaseModel):
         Status Model
     """
     description = models.CharField(max_length = 50, unique = True)
+    fields_tracker = FieldTracker()
 
     class Meta:
         verbose_name_plural = "Statuses"
@@ -22,6 +25,7 @@ class Category(BaseModel):
         Category Model
     """
     description = models.CharField(max_length = 200, unique = True)
+    fields_tracker = FieldTracker()
 
     class Meta:
         verbose_name_plural = "Categories"
@@ -35,6 +39,7 @@ class DeathCause(BaseModel):
         Death Cause Model
     """
     description = models.CharField(max_length = 200, unique = True)
+    fields_tracker = FieldTracker()
 
     class Meta:
         verbose_name_plural = "Death Causes"
@@ -52,6 +57,7 @@ class Code(BaseModel):
     """
     description = models.CharField(max_length = 4, unique = True)
     category = models.ForeignKey(Category, on_delete = models.CASCADE, related_name = "codes")
+    fields_tracker = FieldTracker()
 
     def __str__(self):
         return self.description
@@ -68,6 +74,8 @@ class Period(BaseModel):
     icd_equal = models.ForeignKey(Code, on_delete = models.CASCADE, related_name = "equal")
     icd_above = models.ForeignKey(Code, on_delete = models.CASCADE, related_name = "above")
 
+    fields_tracker = FieldTracker()
+
 
 class Mapping(BaseModel):
     """
@@ -77,12 +85,14 @@ class Mapping(BaseModel):
     code = models.ForeignKey(Code, on_delete = models.CASCADE, related_name = "mappings")
 
     is_option = models.BooleanField(default = False)
-    is_option_updated_by = models.ForeignKey(User, on_delete = models.CASCADE, related_name = "is_option_updated_mappings", null = True, blank = True, default = None)
-    is_option_updated_on = models.DateTimeField(null = True, blank = True, default = None)
+    is_option_updated_by = models.ForeignKey(User, on_delete = models.CASCADE, related_name = "is_option_updated_mappings", to_field = "username", default = SUPERUSER_USERNAME, editable = False)
+    is_option_updated_on = MonitorField(monitor = "is_option", editable = False)
 
     status = models.ForeignKey(Status, on_delete = models.CASCADE, related_name = "mappings", to_field = "description", default = "PENDING REVIEW")
-    status_updated_by = models.ForeignKey(User, on_delete = models.CASCADE, related_name = "status_updated_mappings", null = True, blank = True, default = None)
-    status_updated_on = models.DateTimeField(null = True, blank = True, default = None)
+    status_updated_by = models.ForeignKey(User, on_delete = models.CASCADE, related_name = "status_updated_mappings", to_field = "username", default = SUPERUSER_USERNAME, editable = False)
+    status_updated_on = MonitorField(monitor = "status", editable = False)
+
+    fields_tracker = FieldTracker()
  
     def __str__(self):
         return f'{self.description}: {self.code}'
