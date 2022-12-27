@@ -55,7 +55,7 @@
 #                 Q(code = Subquery(exact_match.values('code'))) & Q(is_option = True)
 #             )
 
-#         # TODO: account for time period
+#         # TODO: account for time period # TODO: add status active filter also
 #         codes = self.execute_trigram_sql(value)
 #         ordered_codes = Case(*[When(code = val, then = pos) for pos, val in enumerate(codes)], default = len(codes))
 #         return queryset.filter(
