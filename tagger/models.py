@@ -89,7 +89,7 @@ class Mapping(BaseModel):
     is_option_updated_by = models.ForeignKey(User, on_delete = models.CASCADE, related_name = "is_option_updated_mappings", to_field = "username", default = constants.SUPERUSER_USERNAME, editable = False)
     is_option_updated_on = MonitorField(monitor = "is_option", editable = False)
 
-    status = models.ForeignKey(Status, on_delete = models.CASCADE, related_name = "mappings", to_field = "description", default = constants.Status.PENDING_REVIEW)
+    status = models.ForeignKey(Status, on_delete = models.CASCADE, related_name = "mappings", to_field = "description", default = constants.Status.PENDING_REVIEW) # TODO: Replace to_field usage with get_default_status method instead
     status_updated_by = models.ForeignKey(User, on_delete = models.CASCADE, related_name = "status_updated_mappings", to_field = "username", default = constants.SUPERUSER_USERNAME, editable = False)
     status_updated_on = MonitorField(monitor = "status", editable = False)
 
