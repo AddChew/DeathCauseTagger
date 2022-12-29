@@ -20,6 +20,13 @@ class Status(BaseModel):
     def __str__(self):
         return self.description
 
+    @classmethod
+    def get_default_status(cls):
+        default_status = cls.objects.get_or_create(
+            description = constants.Status.PENDING_REVIEW
+        )
+        return default_status.id
+
 
 class Category(BaseModel):
     """
@@ -86,11 +93,11 @@ class Mapping(BaseModel):
     code = models.ForeignKey(Code, on_delete = models.CASCADE, related_name = "mappings")
 
     is_option = models.BooleanField(default = False)
-    is_option_updated_by = models.ForeignKey(User, on_delete = models.CASCADE, related_name = "is_option_updated_mappings", to_field = "username", default = constants.SUPERUSER_USERNAME, editable = False)
+    is_option_updated_by = models.ForeignKey(User, on_delete = models.CASCADE, related_name = "is_option_updated_mappings", default = User.get_default_user, editable = False)
     is_option_updated_on = MonitorField(monitor = "is_option", editable = False)
 
-    status = models.ForeignKey(Status, on_delete = models.CASCADE, related_name = "mappings", to_field = "description", default = constants.Status.PENDING_REVIEW) # TODO: Replace to_field usage with get_default_status method instead
-    status_updated_by = models.ForeignKey(User, on_delete = models.CASCADE, related_name = "status_updated_mappings", to_field = "username", default = constants.SUPERUSER_USERNAME, editable = False)
+    status = models.ForeignKey(Status, on_delete = models.CASCADE, related_name = "mappings", default = Status.get_default_status)
+    status_updated_by = models.ForeignKey(User, on_delete = models.CASCADE, related_name = "status_updated_mappings", default = User.get_default_user, editable = False)
     status_updated_on = MonitorField(monitor = "status", editable = False)
 
     fields_tracker = FieldTracker()

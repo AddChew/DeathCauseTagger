@@ -1,9 +1,3 @@
-import os
-
-
-SUPERUSER_USERNAME = os.environ.get('DJANGO_SUPERUSER_USERNAME', 'superuser')
-
-
 class Status:
     ACTIVE = 'ACTIVE'
     INACTIVE = 'INACTIVE'

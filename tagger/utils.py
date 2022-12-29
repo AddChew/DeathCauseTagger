@@ -1,7 +1,6 @@
 from django.db import models
 from django.contrib import admin
 from authentication.models import User
-from tagger import constants
 
 
 class CustomForeignKey(models.ForeignKey):
@@ -25,10 +24,10 @@ class BaseModel(models.Model):
     """
         Base Model for inheritance
     """
-    created_by = CustomForeignKey(User, on_delete = models.CASCADE, related_name = "created_%(class)ss", to_field = "username", default = constants.SUPERUSER_USERNAME, editable = False)
+    created_by = CustomForeignKey(User, on_delete = models.CASCADE, related_name = "created_%(class)ss", default = User.get_default_user, editable = False)
     created_on = models.DateTimeField(auto_now_add = True)
 
-    updated_by = CustomForeignKey(User, on_delete = models.CASCADE, related_name = "modified_%(class)ss", to_field = "username", default = constants.SUPERUSER_USERNAME, editable = False)
+    updated_by = CustomForeignKey(User, on_delete = models.CASCADE, related_name = "modified_%(class)ss", default = User.get_default_user, editable = False)
     updated_on = models.DateTimeField(auto_now = True)
 
     class Meta:
