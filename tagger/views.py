@@ -1,7 +1,7 @@
 from rest_framework.generics import ListAPIView
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 from tagger.models import Category, Mapping
-from tagger.filters import CategorySearchFilterSet, MappingSearchFilterSet #, MappingLookupFilterSet
+from tagger.filters import CategorySearchFilterSet, MappingSearchFilterSet, MappingLookupFilterSet
 from tagger.serializers import CategorySerializer, MappingSerializer
 
 
@@ -19,12 +19,11 @@ class MappingSearchView(ListAPIView):
     filterset_class = MappingSearchFilterSet
 
 
-# class MappingLookupView(ListAPIView):
-#     permission_classes = (IsAuthenticatedOrReadOnly,)
-#     queryset = Mapping.objects.all()
-#     serializer_class = MappingSerializer
-#     filterset_class = MappingLookupFilterSet
-
+class MappingLookupView(ListAPIView):
+    permission_classes = (IsAuthenticatedOrReadOnly,)
+    queryset = Mapping.objects.all()
+    serializer_class = MappingSerializer
+    filterset_class = MappingLookupFilterSet
 
 
 # class MappingsView(APIView):

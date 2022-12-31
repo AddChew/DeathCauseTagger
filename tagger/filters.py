@@ -1,5 +1,6 @@
-# from django.db import connection
+from ordered_set import OrderedSet
 from django.db.models import Case, Value, When, Q, Subquery
+from django.contrib.postgres.search import TrigramSimilarity
 from django_filters.rest_framework import CharFilter, FilterSet
 from tagger import constants
 from tagger.models import Status, Category, Mapping
@@ -47,37 +48,34 @@ class MappingSearchFilterSet(FilterSet):
         fields = ('description', 'category')
 
 
-# class MappingLookupFilterSet(FilterSet):
-#     description = CharFilter(method = 'filter_query')
+class MappingLookupFilterSet(FilterSet):
+    description = CharFilter(field_name = 'description__description', method = 'filter_query')
 
-#     def filter_query(self, queryset, name, value):
-#         exact_match = queryset.filter(description__iexact = value)
-#         if exact_match:
-#             return queryset.filter(
-#                 Q(code = Subquery(exact_match.values('code'))) & Q(is_option = True)
-#             )
+    def filter_query(self, queryset, name, value):
+        active_status = Status.objects.get(description = constants.Status.ACTIVE)
+        exact_match = queryset.filter(description__description__iexact = value) # TODO: account for time period
 
-#         # TODO: account for time period # TODO: add status active filter also
-#         codes = self.execute_trigram_sql(value)
-#         ordered_codes = Case(*[When(code = val, then = pos) for pos, val in enumerate(codes)], default = len(codes))
-#         return queryset.filter(
-#                 Q(code__in = codes) & Q(is_option = True)
-#             ).order_by(ordered_codes)
+        if exact_match:
+            return queryset.filter(
+                Q(code = Subquery(exact_match.values('code'))) & Q(is_option = True) & Q(status = active_status)
+            )
 
-#     def execute_trigram_sql(self, value):
-#         with connection.cursor() as cursor:
-#             cursor.execute(
-#             """
-#             SELECT code_id, MAX(SIMILARITY(description, %(description)s)) AS similarity
-#             FROM tagger_mapping 
-#             GROUP BY code_id
-#             HAVING MAX(SIMILARITY(description, %(description)s)) > 0.3
-#             ORDER BY similarity DESC 
-#             """,
-#             {'description': value},
-#             )
-#             return [code[0] for code in cursor.fetchall()]
+        fuzzy_matches = OrderedSet(queryset.filter(
+            status = active_status
+        ).annotate(
+            similarity = TrigramSimilarity('description__description', value)
+        ).filter(
+            similarity__gt = 0.3
+        ).order_by(
+            '-similarity'
+        ).values_list(
+            'code', flat = True
+        ))
 
-#     class Meta:
-#         model = Mapping
-#         fields = ('description',)
+        preserved_order = Case(
+            *[When(code = val, then = pos) for pos, val in enumerate(fuzzy_matches)], default = len(fuzzy_matches)
+        )
+
+        return queryset.filter(
+            Q(code__in = fuzzy_matches) & Q(status = active_status) & Q(is_option = True)
+        ).order_by(preserved_order)
