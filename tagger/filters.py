@@ -1,9 +1,9 @@
 from ordered_set import OrderedSet
 from django.db.models import Case, Value, When, Q, Subquery
 from django.contrib.postgres.search import TrigramSimilarity
-from django_filters.rest_framework import CharFilter, FilterSet
+from django_filters.rest_framework import CharFilter, FilterSet, NumberFilter
 from tagger import constants
-from tagger.models import Status, Category, Mapping
+from tagger.models import Status, Category, Mapping, Period
 
 
 class CategorySearchFilterSet(FilterSet):
@@ -48,20 +48,22 @@ class MappingSearchFilterSet(FilterSet):
         fields = ('description', 'category')
 
 
-class MappingLookupFilterSet(FilterSet):
-    description = CharFilter(field_name = 'description__description', method = 'filter_query')
+class MappingSingleLookupFilterSet(FilterSet):
+    description = CharFilter(field_name = 'description__description', method = 'filter_description', label = 'Description')
+    duration = NumberFilter(method = 'filter_duration', label = 'Duration')
+    active_status = Status.objects.filter(description = constants.Status.ACTIVE)
+    cond = Q(is_option = True) & Q(status = Subquery(active_status.values('id')))
 
-    def filter_query(self, queryset, name, value):
-        active_status = Status.objects.get(description = constants.Status.ACTIVE)
-        exact_match = queryset.filter(description__description__iexact = value) # TODO: account for time period
-
-        if exact_match:
-            return queryset.filter(
-                Q(code = Subquery(exact_match.values('code'))) & Q(is_option = True) & Q(status = active_status)
-            )
+    def filter_description(self, queryset, name, value):
+        exact_match = queryset.filter(description__description__iexact = value)
+        exact_match_option = queryset.filter(
+            Q(code = Subquery(exact_match.values('code'))) & self.cond
+        )
+        if exact_match_option:
+            return exact_match_option
 
         fuzzy_matches = OrderedSet(queryset.filter(
-            status = active_status
+            status = Subquery(self.active_status.values('id'))
         ).annotate(
             similarity = TrigramSimilarity('description__description', value)
         ).filter(
@@ -77,5 +79,30 @@ class MappingLookupFilterSet(FilterSet):
         )
 
         return queryset.filter(
-            Q(code__in = fuzzy_matches) & Q(status = active_status) & Q(is_option = True)
+            Q(code__in = fuzzy_matches) & self.cond
         ).order_by(preserved_order)
+
+    def filter_duration(self, queryset, name, value):
+        if len(queryset) == 1:
+            try:
+                period = Period.objects.get(icd_input = Subquery(queryset.values('code')))
+                queryset = Mapping.objects.all()
+                if value < period.threshold:
+                    return queryset.filter(
+                        Q(code = period.icd_below) & self.cond
+                    )
+                elif value == period.threshold:
+                    return queryset.filter(
+                        Q(code = period.icd_equal) & self.cond
+                    )
+                else:
+                    return queryset.filter(
+                        Q(code = period.icd_above) & self.cond
+                    )
+            except Period.DoesNotExist:
+                return queryset
+        return queryset
+
+    class Meta:
+        model = Mapping
+        fields = ('description',) 
