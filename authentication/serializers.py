@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-from django.contrib.auth import get_user_model
+from django.contrib.auth import get_user_model, user_logged_in
 
 
 class RegisterSerializer(serializers.ModelSerializer):
@@ -31,6 +31,7 @@ class LoginSerializer(TokenObtainPairSerializer):
     
     @classmethod
     def get_token(cls, user):
+        user_logged_in.send(sender = get_user_model(), user = user)
         token = super().get_token(user)
         user_data = RegisterSerializer(user).data
         for key, value in user_data.items():

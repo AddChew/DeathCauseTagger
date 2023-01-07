@@ -1,5 +1,6 @@
 from rest_framework import serializers
-from tagger.models import Category, Mapping
+from tagger.utils import CustomSlugRelatedField
+from tagger.models import Category, Mapping, Code, DeathCause
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -12,8 +13,8 @@ class CategorySerializer(serializers.ModelSerializer):
 
 
 class MappingSerializer(serializers.ModelSerializer):
-    code = serializers.StringRelatedField()
-    description = serializers.StringRelatedField()
+    code = serializers.SlugRelatedField(slug_field = 'description', queryset = Code.objects.all())
+    description = CustomSlugRelatedField(slug_field = 'description', queryset = DeathCause.objects.all())
 
     class Meta:
         model = Mapping

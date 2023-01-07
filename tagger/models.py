@@ -22,7 +22,7 @@ class Status(BaseModel):
 
     @classmethod
     def get_default_status(cls):
-        default_status = cls.objects.get_or_create(
+        default_status, _ = cls.objects.get_or_create(
             description = constants.Status.PENDING_REVIEW
         )
         return default_status.id

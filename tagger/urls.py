@@ -1,5 +1,5 @@
 from django.urls import re_path, include
-from tagger.views import CategorySearchView, MappingSearchView, MappingSingleLookupView
+from tagger.views import CategorySearchView, MappingSearchView, MappingLookupView, PeriodLookupView
 
 
 SEARCH_API_PREFIX = 'search'
@@ -11,7 +11,8 @@ search_urlpatterns = [
 ]
 
 lookup_urlpatterns = [
-    re_path(r'^mapping$', MappingSingleLookupView.as_view(), name = 'mapping')
+    re_path(r'^mapping$', MappingLookupView.as_view(), name = 'mapping'),
+    re_path(r'^period$', PeriodLookupView.as_view(), name = 'period'),
 ]
 
 urlpatterns = [
