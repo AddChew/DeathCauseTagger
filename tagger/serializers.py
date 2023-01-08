@@ -1,6 +1,17 @@
+from django.core.exceptions import ObjectDoesNotExist
 from rest_framework import serializers
-from tagger.utils import CustomSlugRelatedField
 from tagger.models import Category, Mapping, Code, DeathCause
+
+
+class CustomSlugRelatedField(serializers.SlugRelatedField):
+
+    def to_internal_value(self, data):
+        try:
+            return self.get_queryset().get(**{self.slug_field: data})
+        except ObjectDoesNotExist:
+            return self.get_queryset().create(**{self.slug_field: data})
+        except (TypeError, ValueError):
+            self.fail('Invalid data type or value.')
 
 
 class CategorySerializer(serializers.ModelSerializer):

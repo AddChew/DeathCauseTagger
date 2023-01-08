@@ -4,7 +4,19 @@ from django.contrib import messages
 from django.utils.translation import ngettext
 from tagger.models import *
 from tagger import constants
-from tagger.utils import BaseAdmin
+
+
+class BaseAdmin(admin.ModelAdmin):
+    list_display = ("description", "created_by", "created_on", "updated_by", "updated_on")
+    ordering = ("pk",)
+    search_fields = ("description__icontains",)
+
+    def save_model(self, request, obj, form, change):
+        if obj.fields_tracker.changed():
+            if not change:
+                obj.created_by = request.user
+            obj.updated_by = request.user
+            super().save_model(request, obj, form, change)
 
 
 @admin.register(Status)
