@@ -1,7 +1,10 @@
+import operator
+import pandas as pd
+from functools import reduce
 from ordered_set import OrderedSet
 from django.http import Http404
 from django.shortcuts import get_object_or_404
-from django.db.models import Case, Value, When, Q
+from django.db.models import Case, Value, When, Q, Subquery
 from django.contrib.postgres.search import TrigramSimilarity
 from rest_framework import status
 from rest_framework.views import APIView
@@ -9,10 +12,10 @@ from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
 from rest_framework.request import clone_request
 from rest_framework.exceptions import ValidationError
-from rest_framework.generics import ListAPIView, UpdateAPIView, RetrieveAPIView
+from rest_framework.generics import ListAPIView, UpdateAPIView, RetrieveAPIView, CreateAPIView
 from tagger import constants
 from tagger.models import Category, Mapping, Period
-from tagger.serializers import CategorySerializer, MappingSerializer
+from tagger.serializers import CategorySerializer, MappingSerializer, DeathCausesSerializer
 
 
 class MappingBaseView(APIView):
@@ -118,6 +121,7 @@ class PeriodLookupView(MappingBaseRetrieveView):
     permission_classes = (AllowAny,)
     queryset = Period.objects.all()
 
+    # TODO: refactor so that this piece of code can be used in mapping batch view also
     def get_object(self):
         code = self.request.query_params.get('code')
         period = get_object_or_404(self.get_queryset(), icd_input__description__iexact = code)
@@ -172,7 +176,7 @@ class MappingFuzzyLookupView(MappingBaseListView):
                              .filter(similarity__gt = 0.3) \
                              .order_by('-similarity') \
                              .values_list('code', flat = True)
-            )
+            )[:10]
             preserved_order = Case(
                 *[When(code = val, then = pos) for pos, val in enumerate(fuzzy_matches)], default = len(fuzzy_matches)
             )
@@ -192,3 +196,83 @@ class MappingUpdateCreateView(PutAsCreateMixin, MappingBaseView, UpdateAPIView):
         }
         obj = get_object_or_404(self.get_queryset(), **filter)
         return obj
+
+
+class MappingBatchLookupView(CreateAPIView):
+    description = 'description'
+    duration = 'duration'
+
+    queryset = Mapping.objects.all()
+    # serializer_class = MappingSerializer
+    serializer_class = DeathCausesSerializer
+
+    # TODO: Refactor
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data = request.data)
+        serializer.is_valid(raise_exception = True)
+
+        descriptions = serializer.data[self.description]
+        durations = serializer.data[self.duration]
+
+        # TODO: create dataframe with 4 columns, 2 for input description and duration, 1 for exact, 1 for fuzzy
+        # TODO: Run exact first, if exact nan, then run fuzzy
+        # TODO: Only pass exact through duration match
+        # TODO: exact will be a dict or nan
+        # TODO: fuzzy will be a list[dict] or empty list
+        # TODO: return json response
+        
+        df_matches = pd.DataFrame({
+            self.description: descriptions,
+            self.duration: durations,
+        })
+
+        # TODO: refactor
+        # Convert description uppercase
+        normalized_description = f'{self.description}_normalized'
+        df_matches[normalized_description] = df_matches[self.description].str.upper()
+
+        query = reduce(operator.or_, (Q(description__description__iexact = desc) for desc in descriptions))
+        exact_matches = self.get_queryset().filter(query & Q(status__description = constants.Status.ACTIVE))
+        df_exact_matches = pd.DataFrame.from_dict(
+            MappingSerializer(exact_matches, many = True).data
+            ).rename(columns = {self.description: normalized_description})
+        df_matches = df_matches.merge(df_exact_matches, on = normalized_description, how = 'left').drop(columns = [normalized_description])
+
+        options = self.get_queryset().filter(
+            Q(code__in = Subquery(exact_matches.values('code'))) & Q(is_option = True) & Q(status__description = constants.Status.ACTIVE)
+        )
+        serialized_options = MappingSerializer(options, many = True).data
+        df_exact_matches = pd.DataFrame.from_dict(serialized_options).drop(columns = [self.description])
+        df_exact_matches['exact_match'] = serialized_options
+        df_matches = df_matches.merge(df_exact_matches, how = 'left', on = 'code')
+
+        query = reduce(operator.or_, (Q(icd_input__description__iexact = code) for code in df_matches['code']))
+        periods = Period.objects.all().filter(query & )
+
+
+        # Account for duration
+        
+        #.drop(columns = ['code'])
+        print(df_matches)
+
+        return Response(MappingSerializer(options, many = True).data, status = status.HTTP_200_OK)
+    
+    #     queryset = Period.objects.all()
+
+    # def get_object(self):
+    #     code = self.request.query_params.get('code')
+    #     period = get_object_or_404(self.get_queryset(), icd_input__description__iexact = code)
+    #     code = period.icd_input
+
+    #     duration = self.request.query_params.get('duration')
+    #     if duration:
+    #         duration = self.validate_duration(duration)
+    #         if duration < period.threshold:
+    #             code = period.icd_below
+    #         elif duration == period.threshold:
+    #             code = period.icd_equal
+    #         else:
+    #             code = period.icd_above
+    #     return code.mappings.get(self.active_option_cond)
+
+# TODO: Add filter for only those with active status for all models

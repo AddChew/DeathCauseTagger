@@ -3,6 +3,7 @@ from tagger.views import (
     CategorySearchView, MappingSearchView, 
     MappingExactLookupView, MappingFuzzyLookupView, 
     PeriodLookupView, MappingUpdateCreateView,
+    MappingBatchLookupView,
 )
 
 SEARCH_API_PREFIX = 'search'
@@ -17,6 +18,7 @@ lookup_urlpatterns = [
     re_path(r'^exact/mapping$', MappingExactLookupView.as_view(), name = 'exact_mapping'),
     re_path(r'^fuzzy/mapping$', MappingFuzzyLookupView.as_view(), name = 'fuzzy_mapping'),
     re_path(r'^update/mapping$', MappingUpdateCreateView.as_view(), name = 'update_mapping'),
+    re_path(r'^batch/mapping$', MappingBatchLookupView.as_view(), name = 'batch_mapping'),
     re_path(r'^period$', PeriodLookupView.as_view(), name = 'period'),
 ]
 

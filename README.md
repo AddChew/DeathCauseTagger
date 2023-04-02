@@ -67,7 +67,7 @@ conda env config vars set POSTGRES_PASSWORD=<your password>
 conda activate conda-postgres
 ```
 
-12. Migrate database
+12. Migrate database (Might not need makemigrations step, as we will provide the migrations)
 ```sh
 python manage.py makemigrations
 python manage.py migrate

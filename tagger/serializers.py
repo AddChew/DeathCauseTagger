@@ -32,3 +32,13 @@ class MappingSerializer(serializers.ModelSerializer):
         fields = (
             'code', 'description'
         )
+
+
+class DeathCausesSerializer(serializers.Serializer):
+    description = serializers.ListField(child = serializers.CharField(max_length = 200), allow_empty = False)
+    duration = serializers.ListField(child = serializers.DecimalField(max_digits = 7, decimal_places = 2, min_value = 0, coerce_to_string = False), allow_empty = False)
+
+    def validate(self, attrs):
+        if len(attrs['description']) != len(attrs['duration']):
+            raise serializers.ValidationError('Number of descriptions must match number of durations.')
+        return super().validate(attrs)

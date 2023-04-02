@@ -63,6 +63,11 @@ class Category(BaseModel):
         Category Model
     """
     description = models.CharField(max_length = 200, unique = True)
+
+    status = models.ForeignKey(Status, on_delete = models.CASCADE, related_name = "categories", default = Status.get_default_status)
+    status_updated_by = models.ForeignKey(User, on_delete = models.CASCADE, related_name = "status_updated_categories", default = User.get_default_user, editable = False)
+    status_updated_on = MonitorField(monitor = "status", editable = False)
+
     fields_tracker = FieldTracker()
 
     class Meta:
@@ -77,6 +82,11 @@ class DeathCause(BaseModel):
         Death Cause Model
     """
     description = models.CharField(max_length = 200, unique = True)
+
+    status = models.ForeignKey(Status, on_delete = models.CASCADE, related_name = "causes", default = Status.get_default_status)
+    status_updated_by = models.ForeignKey(User, on_delete = models.CASCADE, related_name = "status_updated_causes", default = User.get_default_user, editable = False)
+    status_updated_on = MonitorField(monitor = "status", editable = False)
+
     fields_tracker = FieldTracker()
 
     class Meta:
@@ -95,6 +105,11 @@ class Code(BaseModel):
     """
     description = models.CharField(max_length = 4, unique = True)
     category = models.ForeignKey(Category, on_delete = models.CASCADE, related_name = "codes")
+
+    status = models.ForeignKey(Status, on_delete = models.CASCADE, related_name = "codes", default = Status.get_default_status)
+    status_updated_by = models.ForeignKey(User, on_delete = models.CASCADE, related_name = "status_updated_codes", default = User.get_default_user, editable = False)
+    status_updated_on = MonitorField(monitor = "status", editable = False)
+
     fields_tracker = FieldTracker()
 
     def __str__(self):
@@ -111,6 +126,10 @@ class Period(BaseModel):
     icd_below = models.ForeignKey(Code, on_delete = models.CASCADE, related_name = "below") 
     icd_equal = models.ForeignKey(Code, on_delete = models.CASCADE, related_name = "equal")
     icd_above = models.ForeignKey(Code, on_delete = models.CASCADE, related_name = "above")
+
+    status = models.ForeignKey(Status, on_delete = models.CASCADE, related_name = "periods", default = Status.get_default_status)
+    status_updated_by = models.ForeignKey(User, on_delete = models.CASCADE, related_name = "status_updated_periods", default = User.get_default_user, editable = False)
+    status_updated_on = MonitorField(monitor = "status", editable = False)
 
     fields_tracker = FieldTracker()
 

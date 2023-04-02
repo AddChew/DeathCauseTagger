@@ -22,6 +22,20 @@ class Migration(migrations.Migration):
     operations = [
         TrigramExtension(),
         migrations.CreateModel(
+            name='Status',
+            fields=[
+                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('created_on', models.DateTimeField(auto_now_add=True)),
+                ('updated_on', models.DateTimeField(auto_now=True)),
+                ('description', models.CharField(max_length=50, unique=True)),
+                ('created_by', tagger.models.CustomForeignKey(default=authentication.models.User.get_default_user, editable=False, on_delete=django.db.models.deletion.CASCADE, related_name='created_statuses', to=settings.AUTH_USER_MODEL)),
+                ('updated_by', tagger.models.CustomForeignKey(default=authentication.models.User.get_default_user, editable=False, on_delete=django.db.models.deletion.CASCADE, related_name='modified_statuses', to=settings.AUTH_USER_MODEL)),
+            ],
+            options={
+                'verbose_name_plural': 'Statuses',
+            },
+        ),
+        migrations.CreateModel(
             name='Category',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
@@ -30,6 +44,9 @@ class Migration(migrations.Migration):
                 ('description', models.CharField(max_length=200, unique=True)),
                 ('created_by', tagger.models.CustomForeignKey(default=authentication.models.User.get_default_user, editable=False, on_delete=django.db.models.deletion.CASCADE, related_name='created_categories', to=settings.AUTH_USER_MODEL)),
                 ('updated_by', tagger.models.CustomForeignKey(default=authentication.models.User.get_default_user, editable=False, on_delete=django.db.models.deletion.CASCADE, related_name='modified_categories', to=settings.AUTH_USER_MODEL)),
+                ('status', models.ForeignKey(default=tagger.models.Status.get_default_status, on_delete=django.db.models.deletion.CASCADE, related_name='categories', to='tagger.status')),
+                ('status_updated_on', model_utils.fields.MonitorField(default=django.utils.timezone.now, editable=False, monitor='status')),
+                ('status_updated_by', models.ForeignKey(default=authentication.models.User.get_default_user, editable=False, on_delete=django.db.models.deletion.CASCADE, related_name='status_updated_categories', to=settings.AUTH_USER_MODEL)),
             ],
             options={
                 'verbose_name_plural': 'Categories',
@@ -45,6 +62,9 @@ class Migration(migrations.Migration):
                 ('category', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='codes', to='tagger.category')),
                 ('created_by', tagger.models.CustomForeignKey(default=authentication.models.User.get_default_user, editable=False, on_delete=django.db.models.deletion.CASCADE, related_name='created_codes', to=settings.AUTH_USER_MODEL)),
                 ('updated_by', tagger.models.CustomForeignKey(default=authentication.models.User.get_default_user, editable=False, on_delete=django.db.models.deletion.CASCADE, related_name='modified_codes', to=settings.AUTH_USER_MODEL)),
+                ('status', models.ForeignKey(default=tagger.models.Status.get_default_status, on_delete=django.db.models.deletion.CASCADE, related_name='codes', to='tagger.status')),
+                ('status_updated_on', model_utils.fields.MonitorField(default=django.utils.timezone.now, editable=False, monitor='status')),
+                ('status_updated_by', models.ForeignKey(default=authentication.models.User.get_default_user, editable=False, on_delete=django.db.models.deletion.CASCADE, related_name='status_updated_codes', to=settings.AUTH_USER_MODEL)),
             ],
             options={
                 'abstract': False,
@@ -59,23 +79,12 @@ class Migration(migrations.Migration):
                 ('description', models.CharField(max_length=200, unique=True)),
                 ('created_by', tagger.models.CustomForeignKey(default=authentication.models.User.get_default_user, editable=False, on_delete=django.db.models.deletion.CASCADE, related_name='created_deathcauses', to=settings.AUTH_USER_MODEL)),
                 ('updated_by', tagger.models.CustomForeignKey(default=authentication.models.User.get_default_user, editable=False, on_delete=django.db.models.deletion.CASCADE, related_name='modified_deathcauses', to=settings.AUTH_USER_MODEL)),
+                ('status', models.ForeignKey(default=tagger.models.Status.get_default_status, on_delete=django.db.models.deletion.CASCADE, related_name='causes', to='tagger.status')),
+                ('status_updated_on', model_utils.fields.MonitorField(default=django.utils.timezone.now, editable=False, monitor='status')),
+                ('status_updated_by', models.ForeignKey(default=authentication.models.User.get_default_user, editable=False, on_delete=django.db.models.deletion.CASCADE, related_name='status_updated_causes', to=settings.AUTH_USER_MODEL)),
             ],
             options={
                 'verbose_name_plural': 'Death Causes',
-            },
-        ),
-        migrations.CreateModel(
-            name='Status',
-            fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_on', models.DateTimeField(auto_now_add=True)),
-                ('updated_on', models.DateTimeField(auto_now=True)),
-                ('description', models.CharField(max_length=50, unique=True)),
-                ('created_by', tagger.models.CustomForeignKey(default=authentication.models.User.get_default_user, editable=False, on_delete=django.db.models.deletion.CASCADE, related_name='created_statuses', to=settings.AUTH_USER_MODEL)),
-                ('updated_by', tagger.models.CustomForeignKey(default=authentication.models.User.get_default_user, editable=False, on_delete=django.db.models.deletion.CASCADE, related_name='modified_statuses', to=settings.AUTH_USER_MODEL)),
-            ],
-            options={
-                'verbose_name_plural': 'Statuses',
             },
         ),
         migrations.CreateModel(
@@ -91,6 +100,9 @@ class Migration(migrations.Migration):
                 ('icd_equal', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='equal', to='tagger.code')),
                 ('icd_input', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, related_name='period', to='tagger.code')),
                 ('updated_by', tagger.models.CustomForeignKey(default=authentication.models.User.get_default_user, editable=False, on_delete=django.db.models.deletion.CASCADE, related_name='modified_periods', to=settings.AUTH_USER_MODEL)),
+                ('status', models.ForeignKey(default=tagger.models.Status.get_default_status, on_delete=django.db.models.deletion.CASCADE, related_name='periods', to='tagger.status')),
+                ('status_updated_on', model_utils.fields.MonitorField(default=django.utils.timezone.now, editable=False, monitor='status')),
+                ('status_updated_by', models.ForeignKey(default=authentication.models.User.get_default_user, editable=False, on_delete=django.db.models.deletion.CASCADE, related_name='status_updated_periods', to=settings.AUTH_USER_MODEL)),
             ],
             options={
                 'abstract': False,
