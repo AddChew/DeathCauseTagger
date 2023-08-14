@@ -26,6 +26,6 @@ COPY ./backend/app/start /start
 RUN sed -i 's/\r$//g' /start
 RUN chmod +x /start
 
-WORKDIR /app/backend
+WORKDIR /src/backend
 
 ENTRYPOINT ["/poll"]
