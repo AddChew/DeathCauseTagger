@@ -51,6 +51,9 @@ services:
     command: /start-celeryworker
     volumes:
       - ../src:/src
+    environment:
+      - CELERY_BROKER=redis://redis:6379/0
+      - CELERY_BACKEND=redis://redis:6379/0
     depends_on:
       - redis
       - db
@@ -63,6 +66,9 @@ services:
     command: /start-celerybeat
     volumes:
       - ../src:/src
+    environment:
+      - CELERY_BROKER=redis://redis:6379/0
+      - CELERY_BACKEND=redis://redis:6379/0
     depends_on:
       - redis
       - db
@@ -77,6 +83,7 @@ services:
       - ../src:/src
     environment:
       - CELERY_BROKER=redis://redis:6379/0
+      - CELERY_BACKEND=redis://redis:6379/0
     ports:
       - 5557:5555
     depends_on:
