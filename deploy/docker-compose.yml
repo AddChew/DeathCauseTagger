@@ -14,19 +14,11 @@ services:
       - ../src:/src
     ports:
       - 8010:8000
-    environment:
-      - POSTGRES_DB=postgres
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-      - SQL_HOST=db
-      - SQL_PORT=5432
-      - CELERY_BROKER=redis://redis:6379/0
-      - CELERY_BACKEND=redis://redis:6379/0
-      - DJANGO_SUPERUSER_USERNAME=admin
-      - DJANGO_SUPERUSER_PASSWORD=imd2021
-      - DJANGO_SUPERUSER_EMAIL=admin@email.com
-      - DEBUG=1
-      - SECRET_KEY=django-insecure-&as$$33x!ya%k=0niu567jkm=k^zb)t60c6iywzrqmut@#twtop
+    env_file:
+      - ./backend/app/secrets.env
+      - ./backend/celery/.env
+      - ./backend/app/.env
+      - ./backend/db/.env
     depends_on:
       - redis
       - db
@@ -35,10 +27,8 @@ services:
     image: postgres:14-alpine
     volumes:
       - postgres:/var/lib/postgresql/data/
-    environment:
-      - POSTGRES_DB=postgres
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
+    env_file:
+      - ./backend/db/.env
 
   redis:
     image: redis:7-alpine
@@ -51,9 +41,9 @@ services:
     command: /start-celeryworker
     volumes:
       - ../src:/src
-    environment:
-      - CELERY_BROKER=redis://redis:6379/0
-      - CELERY_BACKEND=redis://redis:6379/0
+    env_file: 
+      - ./backend/celery/.env
+      - ./backend/app/secrets.env
     depends_on:
       - redis
       - db
@@ -66,9 +56,8 @@ services:
     command: /start-celerybeat
     volumes:
       - ../src:/src
-    environment:
-      - CELERY_BROKER=redis://redis:6379/0
-      - CELERY_BACKEND=redis://redis:6379/0
+    env_file: 
+      - ./backend/celery/.env
     depends_on:
       - redis
       - db
@@ -81,9 +70,8 @@ services:
     command: /start-celeryflower
     volumes:
       - ../src:/src
-    environment:
-      - CELERY_BROKER=redis://redis:6379/0
-      - CELERY_BACKEND=redis://redis:6379/0
+    env_file: 
+      - ./backend/celery/.env
     ports:
       - 5557:5555
     depends_on:
