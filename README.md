@@ -14,17 +14,22 @@ git clone -branch develop https://github.com/AddChew/DeathCauseTagger.git
 cd DeathCauseTagger
 ```
 
-3. Build docker image
+3. Navigate into deploy folder
 ```sh
-docker-compose build
-
-# Alternatively, can run the command below which performs both steps 3 and 4.
-# docker-compose up -d --build
+cd deploy
 ```
 
-4. Spin up the docker containers
+4. Build docker image
 ```sh
-docker-compose up -d
+docker compose build
+
+# Alternatively, can run the command below which performs both steps 4 and 5.
+# docker compose up -d --build
+```
+
+5. Spin up the docker containers
+```sh
+docker compose up -d
 ```
 
 ### Useful Commands
@@ -32,24 +37,24 @@ docker-compose up -d
 1. Command to view docker logs
 ```sh
 # Command to view the logs from all containers
-docker-compose logs -f
+docker compose logs -f
 
 # Command to view the logs from specific containers
-docker-compose logs <service-name>
+docker compose logs <service-name>
 ```
 
 2. Command to enter the shell of a specific container that is up and running
 ```sh
 # for example
-# docker-compose exec web bash
-docker-compose exec <service-name> bash
+# docker compose exec web bash
+docker compose exec <service-name> bash
 
 # Use Ctrl-D to exit the container
 ```
 
 3. Command to shutdown active docker containers
 ```sh
-docker-compose down
+docker compose down
 ```
 
 4. Commands to clean up resources (i.e. images, containers, volumes and networks)
