@@ -21,12 +21,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-&as$33x!ya%k=0niu567jkm=k^zb)t60c6iywzrqmut@#twtop'
+SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get('DEBUG')
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -77,20 +77,20 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': os.environ.get('SQL_ENGINE', 'django.db.backends.sqlite3'),
-        'NAME': os.environ.get('POSTGRES_DB', os.path.join(BASE_DIR, 'db.sqlite3')),
-        "USER": os.environ.get('POSTGRES_USER', 'user'),
-        "PASSWORD": os.environ.get('POSTGRES_PASSWORD', 'password'),
-        "HOST": os.environ.get('SQL_HOST', 'localhost'),
-        "PORT": os.environ.get('SQL_PORT', '5432'),
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.environ.get('POSTGRES_DB'),
+        "USER": os.environ.get('POSTGRES_USER'),
+        "PASSWORD": os.environ.get('POSTGRES_PASSWORD'),
+        "HOST": os.environ.get('SQL_HOST'),
+        "PORT": os.environ.get('SQL_PORT'),
     }
 }
 
 
 # Celery
-CELERY_TIMEZONE = os.environ.get('TIME_ZONE', 'UTC')
-CELERY_BROKER_URL = os.environ.get("CELERY_BROKER", "redis://127.0.0.1:6379/0")
-CELERY_RESULT_BACKEND = os.environ.get("CELERY_BACKEND", "redis://127.0.0.1:6379/0")
+CELERY_TIMEZONE = os.environ.get('TIME_ZONE')
+CELERY_BROKER_URL = os.environ.get('CELERY_BROKER')
+CELERY_RESULT_BACKEND = os.environ.get('CELERY_BACKEND')
 
 
 # Password validation
@@ -117,7 +117,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = os.environ.get('TIME_ZONE', 'UTC')
+TIME_ZONE = os.environ.get('TIME_ZONE')
 
 USE_I18N = True
 
