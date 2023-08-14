@@ -18,11 +18,11 @@ RUN apt-get update \
 COPY ./backend/requirements.txt /requirements.txt
 RUN pip install -r /requirements.txt
 
-COPY ./backend/poll /poll
+COPY ./backend/app/poll /poll
 RUN sed -i 's/\r$//g' /poll
 RUN chmod +x /poll
 
-COPY ./backend/start /start
+COPY ./backend/app/start /start
 RUN sed -i 's/\r$//g' /start
 RUN chmod +x /start
 
