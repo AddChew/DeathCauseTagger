@@ -21,3 +21,5 @@ RUN pip install -r /requirements.txt
 COPY ./backend/celery/flower/start /start-celeryflower
 RUN sed -i 's/\r$//g' /start-celeryflower
 RUN chmod +x /start-celeryflower
+
+WORKDIR /src/backend
