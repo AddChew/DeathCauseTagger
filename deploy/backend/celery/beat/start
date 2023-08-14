@@ -3,5 +3,5 @@
 set -o errexit
 set -o nounset
 
-rm -f '../celerybeat.pid' # TODO: Figure out where pid is stored
+rm -f '../celerybeat.pid'
 celery -A backend beat -l INFO
