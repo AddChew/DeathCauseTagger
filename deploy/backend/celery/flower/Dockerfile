@@ -18,14 +18,6 @@ RUN apt-get update \
 COPY ./backend/requirements.txt  /requirements.txt
 RUN pip install -r /requirements.txt
 
-COPY ./backend/poll /poll
-RUN sed -i 's/\r$//g' /poll
-RUN chmod +x /poll
-
 COPY ./backend/celery/flower/start /start-celeryflower
 RUN sed -i 's/\r$//g' /start-celeryflower
 RUN chmod +x /start-celeryflower
-
-WORKDIR /app/backend
-
-ENTRYPOINT ["/poll"]
