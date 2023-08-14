@@ -18,9 +18,9 @@ RUN apt-get update \
 COPY ./backend/requirements.txt  /requirements.txt
 RUN pip install -r /requirements.txt
 
-COPY ./backend/entrypoint /entrypoint
-RUN sed -i 's/\r$//g' /entrypoint
-RUN chmod +x /entrypoint
+COPY ./backend/poll /poll
+RUN sed -i 's/\r$//g' /poll
+RUN chmod +x /poll
 
 COPY ./backend/celery/worker/start /start-celeryworker
 RUN sed -i 's/\r$//g' /start-celeryworker
@@ -28,4 +28,4 @@ RUN chmod +x /start-celeryworker
 
 WORKDIR /app/backend
 
-ENTRYPOINT ["/entrypoint"]
+ENTRYPOINT ["/poll"]
