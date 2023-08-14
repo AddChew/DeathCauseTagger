@@ -21,3 +21,5 @@ RUN pip install -r /requirements.txt
 COPY ./backend/celery/beat/start /start-celerybeat
 RUN sed -i 's/\r$//g' /start-celerybeat
 RUN chmod +x /start-celerybeat
+
+WORKDIR /src/backend

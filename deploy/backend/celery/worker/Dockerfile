@@ -21,3 +21,5 @@ RUN pip install -r /requirements.txt
 COPY ./backend/celery/worker/start /start-celeryworker
 RUN sed -i 's/\r$//g' /start-celeryworker
 RUN chmod +x /start-celeryworker
+
+WORKDIR /src/backend
