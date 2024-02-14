@@ -1,0 +1,1 @@
+from tagger.controllers.categories import CategoryController
