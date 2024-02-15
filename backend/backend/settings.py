@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     'tagger',
     'ninja_jwt',
     'ninja_extra',
+    'authentication',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -130,4 +131,4 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-AUTH_USER_MODEL = "tagger.User"
+AUTH_USER_MODEL = "authentication.User"
