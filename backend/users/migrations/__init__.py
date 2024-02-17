@@ -5,7 +5,7 @@ def create_default_user(apps, schema_editor):
     """
     Create default user if it does not exist.
     """
-    User = apps.get_model("authentication.User")
+    User = apps.get_model("users.User")
 
     username = os.getenv("DEFAULT_USER", "admin")
     password = os.getenv("DEFAULT_PASSWORD", "admin")

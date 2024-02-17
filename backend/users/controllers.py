@@ -2,9 +2,9 @@ from asgiref.sync import sync_to_async
 
 from ninja_extra.permissions import AllowAny
 from ninja_extra import api_controller, http_post
-
-from authentication.schemas.users import RegisterTokenObtainPairInputSchema
 from ninja_jwt.controller import AsyncTokenObtainPairController, AsyncTokenVerificationController
+
+from users.schemas import RegisterTokenObtainPairInputSchema
 
 
 class AsyncTokenObtainPairController(AsyncTokenObtainPairController):
@@ -21,7 +21,8 @@ class AsyncTokenObtainPairController(AsyncTokenObtainPairController):
 
 @api_controller("/token", permissions=[AllowAny], tags=["token"], auth=None)
 class AsyncNinjaJWTDefaultController(
-    AsyncTokenVerificationController, AsyncTokenObtainPairController
-):
+    AsyncTokenVerificationController, 
+    AsyncTokenObtainPairController
+    ):
     """NinjaJWT Async Default controller for obtaining and refreshing tokens"""
     auto_import = True

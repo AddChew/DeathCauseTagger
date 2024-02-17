@@ -7,7 +7,7 @@ from . import create_default_user
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("authentication", "0001_create_user_model"),
+        ("users", "0001_create_user_model"),
     ]
 
     operations = [
