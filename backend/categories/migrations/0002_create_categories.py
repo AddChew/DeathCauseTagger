@@ -14,7 +14,7 @@ def create_categories(apps, schema_editor):
         descriptions = json.load(f)
 
     Category.objects.bulk_create([
-        Category(description = desc) for desc in descriptions 
+        Category(description = desc, status = 0) for desc in descriptions 
     ])
 
 

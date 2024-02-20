@@ -38,7 +38,7 @@ class Migration(migrations.Migration):
                             (1, "rejected"),
                             (2, "pending"),
                         ],
-                        default=0,
+                        default=2,
                     ),
                 ),
                 ("created_on", models.DateTimeField(auto_now_add=True)),
