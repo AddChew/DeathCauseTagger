@@ -18,7 +18,7 @@ class Category(models.Model):
         2: "pending",
     }
     description = models.CharField(max_length = 200, unique = True)
-    status = models.IntegerField(blank = False, null = False, default = 0, choices = STATUS_CHOICES)
+    status = models.IntegerField(blank = False, null = False, default = 2, choices = STATUS_CHOICES)
 
     created_by = models.ForeignKey(User, on_delete = models.CASCADE, related_name = "created_categories", default = User.get_default_user, editable = False)
     created_on = models.DateTimeField(auto_now_add = True)
