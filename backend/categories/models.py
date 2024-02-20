@@ -1,5 +1,5 @@
 from django.db import models
-from model_utils import Choices
+from model_utils import Choices, FieldTracker
 from model_utils.fields import StatusField, MonitorField
 
 from django.contrib.auth import get_user_model
@@ -29,6 +29,8 @@ class Category(models.Model):
 
     status_updated_by = models.ForeignKey(User, on_delete = models.CASCADE, related_name = "status_updated_categories", default = User.get_default_user, editable = False)
     status_updated_on = MonitorField(monitor = "status", editable = False)
+
+    fields_tracker = FieldTracker()
 
     class Meta:
         verbose_name_plural = "Categories"
