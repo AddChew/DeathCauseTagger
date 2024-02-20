@@ -13,9 +13,9 @@ class Category(models.Model):
     Category Model.
     """
     STATUS = Choices(
-        (0, 'approved'),
-        (1, 'rejected'),
-        (2, 'pending review'),
+        (0, "approved"),
+        (1, "rejected"),
+        (2, "pending"),
     )
 
     description = models.CharField(max_length = 200, unique = True)
