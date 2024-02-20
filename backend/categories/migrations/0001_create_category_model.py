@@ -32,15 +32,13 @@ class Migration(migrations.Migration):
                 ("description", models.CharField(max_length=200, unique=True)),
                 (
                     "status",
-                    model_utils.fields.StatusField(
+                    models.IntegerField(
                         choices=[
                             (0, "approved"),
                             (1, "rejected"),
                             (2, "pending"),
                         ],
                         default=0,
-                        max_length=100,
-                        no_check_for_status=True,
                     ),
                 ),
                 ("created_on", models.DateTimeField(auto_now_add=True)),
