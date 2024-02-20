@@ -1,3 +1,4 @@
+import os
 import uuid
 
 from django.db import models
@@ -92,3 +93,15 @@ class User(AbstractBaseUser, PermissionsMixin):
     class Meta:
         verbose_name = _("user")
         verbose_name_plural = _("users")
+
+    @classmethod
+    def get_default_user(cls):
+        username = os.getenv("DEFAULT_USER", "admin")
+        password = os.getenv("DEFAULT_PASSWORD", "admin")
+
+        try:
+            user = cls.objects.get(username = username)
+        except cls.DoesNotExist:
+            user = cls.objects.create_superuser(username, password)
+
+        return user.id
