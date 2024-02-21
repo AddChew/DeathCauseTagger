@@ -38,7 +38,7 @@ class Migration(migrations.Migration):
                         default=django.utils.timezone.now,
                         editable=False,
                         monitor="is_active",
-                        verbose_name="active_updated_on",
+                        verbose_name="active updated on",
                     ),
                 ),
                 ("description", models.CharField(max_length=200, unique=True)),
@@ -60,7 +60,7 @@ class Migration(migrations.Migration):
                         on_delete=django.db.models.deletion.CASCADE,
                         related_name="is_active_updated_%(class)ss",
                         to=settings.AUTH_USER_MODEL,
-                        verbose_name="active_updated_by",
+                        verbose_name="active updated by",
                     ),
                 ),
                 (

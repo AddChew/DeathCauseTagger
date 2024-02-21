@@ -28,8 +28,8 @@ class BaseIsActiveModel(models.Model):
     Base Is Active Model.
     """
     is_active = models.BooleanField(verbose_name = _("active"), default = True)
-    is_active_updated_by = models.ForeignKey(User, verbose_name = _("active_updated_by"), on_delete = models.CASCADE, related_name = "is_active_updated_%(class)ss", default = User.get_default_user, editable = False)
-    is_active_updated_on = MonitorField(verbose_name = _("active_updated_on"), monitor = "is_active", editable = False)
+    is_active_updated_by = models.ForeignKey(User, verbose_name = _("active updated by"), on_delete = models.CASCADE, related_name = "is_active_updated_%(class)ss", default = User.get_default_user, editable = False)
+    is_active_updated_on = MonitorField(verbose_name = _("active updated on"), monitor = "is_active", editable = False)
 
     is_active_tracker = FieldTracker(fields = ["is_active"])
 
