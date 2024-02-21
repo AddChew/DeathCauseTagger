@@ -64,7 +64,7 @@ ROOT_URLCONF = 'backend.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, "templates")],
+        'DIRS': [os.path.join(BASE_DIR, "base", "templates")],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -145,4 +145,8 @@ NINJA_JWT = {
     'BLACKLIST_AFTER_ROTATION': True,
     'UPDATE_LAST_LOGIN': True,
     'SIGNING_KEY': SECRET_KEY,
+}
+
+FIXTURES = {
+    "categories": "categories/fixtures/categories.json"
 }
