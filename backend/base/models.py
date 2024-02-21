@@ -1,3 +1,5 @@
+import uuid
+
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.utils.translation import gettext_lazy as _
@@ -12,6 +14,8 @@ class BaseModel(models.Model):
     """
     Base Model.
     """
+    id = models.UUIDField(primary_key = True, default = uuid.uuid4, editable = False)
+
     created_by = models.ForeignKey(User, on_delete = models.CASCADE, related_name = "created_%(class)ss", default = User.get_default_user, editable = False)
     created_on = models.DateTimeField(auto_now_add = True)
 
