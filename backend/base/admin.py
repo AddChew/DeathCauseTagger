@@ -1,3 +1,4 @@
+from django.utils import timezone
 from django.contrib import admin, messages
 
 
@@ -35,7 +36,11 @@ class BaseAdmin(admin.ModelAdmin):
         Base Admin Action.
         """
         meta = self.model._meta
-        count = queryset.update(**update_fields) # TODO: this does not trigger save model, which is an issue since the updated_by fields will not be updated
+        count = queryset.update(
+            updated_by = request.user.id, 
+            updated_on = timezone.now(),
+            **update_fields
+        )
         model_name = meta.verbose_name_plural if count > 1 else meta.verbose_name
         message = f"Successfully marked {count} {model_name.lower()} as {action}"
         self.message_user(
