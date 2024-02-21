@@ -1,4 +1,4 @@
-from django.contrib import admin
+from django.contrib import admin, messages
 
 
 class BaseAdmin(admin.ModelAdmin):
@@ -30,4 +30,16 @@ class BaseAdmin(admin.ModelAdmin):
 
         super().save_model(request, obj, form, change)
 
-# TODO: bulk change is_active action x 2 + message
+    def action(self, request, queryset, action, update_fields):
+        """
+        Base Admin Action.
+        """
+        meta = self.model._meta
+        count = queryset.update(**update_fields) # TODO: this does not trigger save model, which is an issue since the updated_by fields will not be updated
+        model_name = meta.verbose_name_plural if count > 1 else meta.verbose_name
+        message = f"Successfully marked {count} {model_name.lower()} as {action}"
+        self.message_user(
+            request = request,
+            message = message,
+            level = messages.SUCCESS
+        )
