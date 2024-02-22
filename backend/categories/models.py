@@ -8,10 +8,8 @@ class Category(BaseModel, BaseIsActiveModel):
     """
     Category Model.
     """    
-    description = models.CharField(max_length = 200, unique = True)
-    
+    description = models.CharField(max_length = 200, unique = True)    
     is_active_tracker = FieldTracker(fields = ["is_active"])
-
 
     class Meta:
         verbose_name_plural = "Categories"
