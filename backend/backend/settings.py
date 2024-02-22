@@ -37,6 +37,7 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     'users',
     'categories',
+    'deathcauses',
     'ninja_jwt',
     'ninja_extra',
     'ninja_jwt.token_blacklist',
@@ -148,5 +149,6 @@ NINJA_JWT = {
 }
 
 FIXTURES = {
-    "categories": "categories/fixtures/categories.json"
+    "categories": "categories/fixtures/categories.json",
+    "deathcauses": "deathcauses/fixtures/deathcauses.json",
 }
