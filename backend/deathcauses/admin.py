@@ -12,7 +12,7 @@ class DeathCauseAdmin(BaseAdmin):
     """
     actions = ["mark_active", "mark_inactive"]
 
-    @admin.action(description = "Mark selected death causes as active")
+    @admin.action(description = "Mark selected Death Causes as active")
     def mark_active(self, request, queryset):
         """
         Mark selected death causes as active.
@@ -25,7 +25,7 @@ class DeathCauseAdmin(BaseAdmin):
                 "is_active_updated_on": timezone.now(),
         })
 
-    @admin.action(description = "Mark selected death causes as inactive")
+    @admin.action(description = "Mark selected Death Causes as inactive")
     def mark_inactive(self, request, queryset):
         """
         Mark selected death causes as inactive.

@@ -12,7 +12,7 @@ class CategoryAdmin(BaseAdmin):
     """
     actions = ["mark_active", "mark_inactive"]
 
-    @admin.action(description = "Mark selected categories as active")
+    @admin.action(description = "Mark selected Categories as active")
     def mark_active(self, request, queryset):
         """
         Mark selected categories as active.
@@ -25,7 +25,7 @@ class CategoryAdmin(BaseAdmin):
                 "is_active_updated_on": timezone.now(),
         })
 
-    @admin.action(description = "Mark selected categories as inactive")
+    @admin.action(description = "Mark selected Categories as inactive")
     def mark_inactive(self, request, queryset):
         """
         Mark selected categories as inactive.
