@@ -152,4 +152,5 @@ NINJA_JWT = {
 FIXTURES = {
     "categories": "categories/fixtures/categories.json",
     "deathcauses": "deathcauses/fixtures/deathcauses.json",
+    "codes": "codes/fixtures/codes.json",
 }
