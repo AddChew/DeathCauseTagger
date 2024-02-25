@@ -23,12 +23,18 @@ user_name_field = User.USERNAME_FIELD
 
 
 class RegistrationFailed(DetailDictMixin, APIException):
+    """
+    Registration Failed API Exception.
+    """
     status_code = status.HTTP_409_CONFLICT
     default_detail = _("Failed to register user.")
     default_code = "register_fail"
 
 
 class RegisterTokenInputSchemaMixin(TokenInputSchemaMixin):
+    """
+    Register Token Input Schema Mixin.
+    """
     _default_error_messages = {
         "existing_user": _("Username already exists"),
         "no_active_account": _("No active account found with the given credentials")
@@ -51,7 +57,7 @@ class RegisterTokenInputSchemaMixin(TokenInputSchemaMixin):
 
         if not values.get("password"):
             raise ValidationError({"password": "password is required"})
-        
+
         try:
             User.objects.create_user(**values)
             _user = authenticate(**values)
@@ -60,12 +66,15 @@ class RegisterTokenInputSchemaMixin(TokenInputSchemaMixin):
         except IntegrityError:
             raise RegistrationFailed(
                 cls._default_error_messages["existing_user"],
-            )        
+            )
 
         return values
 
 
 class RegisterTokenObtainInputSchemaBase(ModelSchema, RegisterTokenInputSchemaMixin):
+    """
+    Register Token Input Schema Base Mixin.
+    """
     class Config:
         # extra = "allow"
         model = get_user_model()
@@ -97,8 +106,8 @@ class RegisterTokenObtainInputSchemaBase(ModelSchema, RegisterTokenInputSchemaMi
         if not isinstance(data, dict):
             raise Exception("`get_token` must return a `typing.Dict` type.")
 
-        # a workaround for extra attributes since adding extra=allow in modelconfig adds `addition_props`
-        # field to the schema
+        # a workaround for extra attributes since adding extra=allow in modelconfig adds
+        # `addition_props` field to the schema
         values.__dict__.update(token_data=data)
 
         if api_settings.UPDATE_LAST_LOGIN:
@@ -107,6 +116,9 @@ class RegisterTokenObtainInputSchemaBase(ModelSchema, RegisterTokenInputSchemaMi
         return values
 
     def get_response_schema_init_kwargs(self) -> dict:
+        """
+        Retrieve response schema data.
+        """
         return dict(
             self.dict(exclude={"password"}), **self.__dict__.get("token_data", {})
         )
@@ -114,9 +126,12 @@ class RegisterTokenObtainInputSchemaBase(ModelSchema, RegisterTokenInputSchemaMi
     def to_response_schema(self):
         _schema_type = self.get_response_schema()
         return _schema_type(**self.get_response_schema_init_kwargs())
-    
+
 
 class RegisterTokenObtainPairInputSchema(RegisterTokenObtainInputSchemaBase):
+    """
+    Register Token Pair Schema.
+    """
     @classmethod
     def get_response_schema(cls) -> Type[Schema]:
         return TokenObtainPairOutputSchema

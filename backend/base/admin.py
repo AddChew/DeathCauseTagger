@@ -27,7 +27,7 @@ class BaseAdmin(admin.ModelAdmin):
 
         if obj.is_active_tracker.has_changed("is_active"):
             obj.is_active_updated_by = user
-        
+
         obj.updated_by = user
 
         super().save_model(request, obj, form, change)
@@ -38,7 +38,7 @@ class BaseAdmin(admin.ModelAdmin):
         """
         meta = self.model._meta
         count = queryset.update(
-            updated_by = request.user.id, 
+            updated_by = request.user.id,
             updated_on = timezone.now(),
             **update_fields
         )

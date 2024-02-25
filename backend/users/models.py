@@ -16,7 +16,7 @@ class UserManager(UserManager):
     Custom User Manager.
     """
     use_in_migrations = True
-    
+
     def _create_user(self, username, password, **extra_fields):
         """
         Create and save a user with the given username and password.
@@ -99,6 +99,9 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     @classmethod
     def get_default_user(cls):
+        """
+        Retrieve default user.
+        """
         username = os.getenv("DEFAULT_USER", "admin")
         password = os.getenv("DEFAULT_PASSWORD", "admin")
 

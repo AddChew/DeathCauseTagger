@@ -18,7 +18,7 @@ class DeathCauseAdmin(BaseAdmin):
         Mark selected death causes as active.
         """
         self.action(
-            request, queryset, action = "active", 
+            request, queryset, action = "active",
             update_fields = {
                 "is_active": True,
                 "is_active_updated_by": request.user.id,
@@ -31,7 +31,7 @@ class DeathCauseAdmin(BaseAdmin):
         Mark selected death causes as inactive.
         """
         self.action(
-            request, queryset, action = "inactive", 
+            request, queryset, action = "inactive",
             update_fields = {
                 "is_active": False,
                 "is_active_updated_by": request.user.id,

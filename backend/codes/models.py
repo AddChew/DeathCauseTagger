@@ -8,7 +8,7 @@ from categories.models import Category
 class Code(BaseModel, BaseIsActiveModel):
     """
     Code Model.
-    """    
+    """
     description = models.CharField(max_length = 200, unique = True)
     category = models.ForeignKey(Category, on_delete = models.CASCADE, related_name = "codes")
 
