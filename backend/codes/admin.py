@@ -2,10 +2,10 @@ from django.contrib import admin
 from django.utils import timezone
 
 from base.admin import BaseAdmin
-from categories.models import Category
+from codes.models import Code
 
 
-@admin.register(Category)
+@admin.register(Code)
 class CodeAdmin(BaseAdmin):
     """
     Admin Class for Code Model.
