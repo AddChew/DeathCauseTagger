@@ -4,6 +4,11 @@ import pytest
 from users.models import User
 
 
+username = "test"
+credentials = {
+    "username": username,
+    "password": username,
+}
 register_endpoint = "/api/v1/token/register"
 
 
@@ -11,14 +16,9 @@ register_endpoint = "/api/v1/token/register"
 class TestUsers:
 
     def test_register_user_success(self, client):
-        username = "test"
-        data = {
-            "username": username,
-            "password": username,
-        }
         response = client.post(
             register_endpoint,
-            data,
+            credentials,
             content_type = "application/json",
         )
         assert response.status_code == 200
@@ -31,10 +31,9 @@ class TestUsers:
         assert User.objects.filter(username = username).exists()
 
     def test_register_user_missing_username_password(self, client):
-        data = {}
         response = client.post(
             register_endpoint,
-            data,
+            {},
             content_type = "application/json",
         )
         assert response.status_code == 400
@@ -49,7 +48,7 @@ class TestUsers:
 
     def test_register_user_missing_username(self, client):
         data = {
-            "password": "test"
+            "password": username,
         }
         response = client.post(
             register_endpoint,
@@ -67,7 +66,7 @@ class TestUsers:
 
     def test_register_user_missing_password(self, client):
         data = {
-            "username": "test"
+            "username": username,
         }
         response = client.post(
             register_endpoint,
@@ -100,3 +99,24 @@ class TestUsers:
             "detail": "Username already exists",
             "code": "register_fail"
         }
+
+    def test_create_superuser_success(self):
+        User.objects.create_superuser(**credentials)
+        superuser = User.objects.get(username = username)
+
+        assert superuser.is_active
+        assert superuser.is_staff
+        assert superuser.is_superuser
+
+    def test_create_superuser_failure_is_staff(self):
+        with pytest.raises(ValueError, match = "Superuser must have is_staff=True."):
+            User.objects.create_superuser(**credentials, **{"is_staff": False})
+
+    def test_create_superuser_failure_is_superuser(self):
+        with pytest.raises(ValueError, match = "Superuser must have is_superuser=True."):
+            User.objects.create_superuser(**credentials, **{"is_superuser": False})
+
+    def test_get_default_user(self):
+        default_username = os.getenv("DEFAULT_USER", "admin")
+        default_user = User.objects.get(username = default_username)
+        assert User.get_default_user() == default_user.id
