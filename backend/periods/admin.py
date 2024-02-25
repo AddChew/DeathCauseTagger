@@ -27,7 +27,7 @@ class PeriodAdmin(BaseAdmin):
         "code_above__description__icontains", 
         "threshold",
     )
-    ordering = ("code_input",)
+    ordering = ("code_input__description",)
     actions = ["mark_active", "mark_inactive"]
 
     @admin.action(description = "Mark selected Periods as active")
