@@ -44,6 +44,7 @@ jobs:
 
             -   name: Run unit tests and code coverage
                 run: |
+                    cd backend
                     pytest --cov
                 env:
                     POSTGRES_HOST: postgres
