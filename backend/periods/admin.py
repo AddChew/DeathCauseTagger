@@ -15,7 +15,7 @@ class PeriodAdmin(BaseAdmin):
         "threshold",
         "code_below",
         "code_equal",
-        "code_above"
+        "code_above",
         "created_by", "created_on", 
         "updated_by", "updated_on", 
         "is_active", "is_active_updated_by", "is_active_updated_on",
@@ -25,7 +25,7 @@ class PeriodAdmin(BaseAdmin):
         "code_below__description__icontains", 
         "code_equal__description__icontains",  
         "code_above__description__icontains", 
-        "threshold"
+        "threshold",
     )
     ordering = ("code_input",)
     actions = ["mark_active", "mark_inactive"]
