@@ -11,6 +11,7 @@ class UserAdmin(UserAdmin):
     """
     list_display = ("username", "date_joined", "is_staff", "is_superuser", "is_active", "last_login")
     list_filter = ("is_staff", "is_superuser", "is_active")
+    ordering = ("-last_login",)
     search_fields = ("username__icontains",)
 
     fieldsets = (

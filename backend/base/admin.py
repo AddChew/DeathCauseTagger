@@ -13,6 +13,7 @@ class BaseAdmin(admin.ModelAdmin):
         "is_active", "is_active_updated_by", "is_active_updated_on",
     )
     list_filter = ("is_active",)
+    ordering = ("description",)
     search_fields = ("description__icontains",)
 
     def save_model(self, request, obj, form, change):
