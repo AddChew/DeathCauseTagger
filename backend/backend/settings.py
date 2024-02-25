@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'categories',
     'deathcauses',
     'codes',
+    'periods',
     'ninja_jwt',
     'ninja_extra',
     'ninja_jwt.token_blacklist',
@@ -153,4 +154,5 @@ FIXTURES = {
     "categories": "categories/fixtures/categories.json",
     "deathcauses": "deathcauses/fixtures/deathcauses.json",
     "codes": "codes/fixtures/codes.json",
+    "periods": "periods/fixtures/periods.json",
 }
