@@ -16,11 +16,15 @@ def create_codes(apps, schema_editor):
     with open(settings.FIXTURES[codes_app], "r") as f:
         codes = json.load(f)
 
+    code_objects = []
+
     for category, category_codes in codes.items():
         category = Category.objects.get(description = category)
-        Code.objects.bulk_create([
-            Code(description = code, category = category) for code in category_codes
-        ])
+
+        for code in category_codes:
+            code_objects.append(Code(description = code, category = category)) 
+
+    Code.objects.bulk_create(code_objects)
 
 
 class Migration(migrations.Migration):
