@@ -25,6 +25,8 @@ jobs:
                     --health-interval 10s
                     --health-timeout 5s
                     --health-retries 5
+                ports:
+                    - 5432:5432
         
         steps:
             -   name: Checkout repository code
@@ -37,14 +39,11 @@ jobs:
 
             -   name: Install dependencies
                 run: |
-                    cd backend
                     python -m pip install --upgrade pip
-                    pip install -r requirements.txt
+                    pip install -r backend/requirements.txt
                     pip install coverage==7.4.3 pytest==8.0.2 pytest-cov==4.1.0 pytest-django==4.8.0
 
             -   name: Run unit tests and code coverage
                 run: |
                     cd backend
                     pytest --cov
-                env:
-                    POSTGRES_HOST: postgres
