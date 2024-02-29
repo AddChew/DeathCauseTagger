@@ -43,7 +43,7 @@ INSTALLED_APPS = [
     'deathcauses',
     'codes',
     'periods',
-    'sessions',
+    'states',
     'ninja_jwt',
     'ninja_extra',
     'ninja_jwt.token_blacklist',
