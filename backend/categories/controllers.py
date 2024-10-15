@@ -1,3 +1,4 @@
+from ninja_extra.ordering import ordering
 from ninja_extra.pagination import paginate
 from ninja_extra import api_controller, route
 
@@ -18,12 +19,11 @@ class CategoryController:
     """
     Category API Controller.
     """
-    queryset = Category.objects.all()
-
     @route.get()
     @paginate
+    @ordering
     async def read_categories(self) -> NinjaPaginationResponseSchema[CategorySchema]:
         """
         Read categories.
         """
-        return self.queryset
+        return Category.objects.all()
