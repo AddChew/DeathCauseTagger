@@ -61,3 +61,6 @@ class Mappings(Empty):
     """
     mappings: List[Mapping]
     page: int
+
+
+# TODO: input and output model for mappings
