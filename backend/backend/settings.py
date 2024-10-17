@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'categories',
     'deathcauses',
     'codes',
+    'mappings',
     'periods',
     'ninja_jwt',
     'ninja_extra',
