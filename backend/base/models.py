@@ -61,22 +61,22 @@ class BaseIsActiveModel(models.Model):
         abstract = True
 
 
-class BaseIsPendingModel(models.Model):
+class BaseIsOpenModel(models.Model):
     """
-    Base Is Pending Model.
+    Base Is Open Model.
     """
-    is_pending = models.BooleanField(verbose_name = _("pending"), default = True)
-    is_pending_updated_by = models.ForeignKey(
+    is_open = models.BooleanField(verbose_name = _("open"), default = True)
+    is_open_updated_by = models.ForeignKey(
         User,
-        verbose_name = _("pending updated by"),
+        verbose_name = _("open updated by"),
         on_delete = models.CASCADE,
-        related_name = "is_pending_updated_%(class)ss",
+        related_name = "is_open_updated_%(class)ss",
         default = User.get_default_user,
         editable = False
     )
-    is_pending_updated_on = MonitorField(
-        verbose_name = _("pending updated on"),
-        monitor = "is_pending",
+    is_open_updated_on = MonitorField(
+        verbose_name = _("open updated on"),
+        monitor = "is_open",
         editable = False
     )
 

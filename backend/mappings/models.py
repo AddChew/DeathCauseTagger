@@ -3,10 +3,10 @@ from model_utils import FieldTracker
 
 from codes.models import Code
 from deathcauses.models import DeathCause
-from base.models import BaseModel, BaseIsOptionModel, BaseIsActiveModel, BaseIsPendingModel
+from base.models import BaseModel, BaseIsOptionModel, BaseIsActiveModel, BaseIsOpenModel
 
 
-class Mapping(BaseModel, BaseIsOptionModel, BaseIsActiveModel, BaseIsPendingModel):
+class Mapping(BaseModel, BaseIsOptionModel, BaseIsActiveModel, BaseIsOpenModel):
     """
     Mapping Model.
     """
@@ -15,7 +15,7 @@ class Mapping(BaseModel, BaseIsOptionModel, BaseIsActiveModel, BaseIsPendingMode
 
     is_option_tracker = FieldTracker(fields = ["is_option"])
     is_active_tracker = FieldTracker(fields = ["is_active"])
-    is_pending_tracker = FieldTracker(fields = ["is_pending"])
+    is_open_tracker = FieldTracker(fields = ["is_open"])
 
     class Meta:
         verbose_name_plural = "Mappings"
