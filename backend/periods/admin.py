@@ -28,30 +28,18 @@ class PeriodAdmin(BaseAdmin):
         "threshold",
     )
     ordering = ("code_input__description",)
-    actions = ["mark_active", "mark_inactive"]
+    actions = ("mark_active", "mark_inactive")
 
     @admin.action(description = "Mark selected Periods as active")
     def mark_active(self, request, queryset):
         """
         Mark selected periods as active.
         """
-        self.action(
-            request, queryset, action = "active",
-            update_fields = {
-                "is_active": True,
-                "is_active_updated_by": request.user.id,
-                "is_active_updated_on": timezone.now(),
-        })
+        super().mark_active(request, queryset)
 
     @admin.action(description = "Mark selected Periods as inactive")
     def mark_inactive(self, request, queryset):
         """
         Mark selected periods as inactive.
         """
-        self.action(
-            request, queryset, action = "inactive",
-            update_fields = {
-                "is_active": False,
-                "is_active_updated_by": request.user.id,
-                "is_active_updated_on": timezone.now(),
-        })
+        super().mark_inactive(request, queryset)
