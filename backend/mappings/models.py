@@ -11,7 +11,7 @@ class Mapping(BaseModel, BaseIsOptionModel, BaseIsActiveModel, BaseIsOpenModel):
     Mapping Model.
     """
     code = models.ForeignKey(Code, on_delete = models.CASCADE, related_name = "mappings")
-    description = models.ForeignKey(DeathCause, on_delete = models.CASCADE, related_name = "mappings")
+    death_cause = models.ForeignKey(DeathCause, on_delete = models.CASCADE, related_name = "mappings")
 
     is_option_tracker = FieldTracker(fields = ["is_option"])
     is_active_tracker = FieldTracker(fields = ["is_active"])
@@ -21,4 +21,4 @@ class Mapping(BaseModel, BaseIsOptionModel, BaseIsActiveModel, BaseIsOpenModel):
         verbose_name_plural = "Mappings"
 
     def __str__(self):
-        return f"{self.code}-{self.description}"
+        return f"{self.code}-{self.death_cause}"
