@@ -59,3 +59,26 @@ class BaseIsActiveModel(models.Model):
 
     class Meta:
         abstract = True
+
+
+class BaseIsPendingModel(models.Model):
+    """
+    Base Is Pending Model.
+    """
+    is_pending = models.BooleanField(verbose_name = _("pending"), default = True)
+    is_pending_updated_by = models.ForeignKey(
+        User,
+        verbose_name = _("pending updated by"),
+        on_delete = models.CASCADE,
+        related_name = "is_pending_updated_%(class)ss",
+        default = User.get_default_user,
+        editable = False
+    )
+    is_pending_updated_on = MonitorField(
+        verbose_name = _("pending updated on"),
+        monitor = "is_pending",
+        editable = False
+    )
+
+    class Meta:
+        abstract = True
