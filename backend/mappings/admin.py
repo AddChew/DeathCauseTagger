@@ -78,3 +78,29 @@ class MappingAdmin(BaseAdmin):
         Mark selected mappings as inactive.
         """
         super().mark_inactive(request, queryset)
+
+    @admin.action(description = "Mark selected Mappings as open")
+    def mark_open(self, request, queryset):
+        """
+        Mark selected mappings as open.
+        """
+        self.action(
+            request, queryset, action = "open",
+            update_fields = {
+                "is_open": True,
+                "is_open_updated_by": request.user.id,
+                "is_open_updated_on": timezone.now(),
+        })
+
+    @admin.action(description = "Mark selected Mappings as closed")
+    def mark_closed(self, request, queryset):
+        """
+        Mark selected mappings as closed.
+        """
+        self.action(
+            request, queryset, action = "closed",
+            update_fields = {
+                "is_open": False,
+                "is_openn_updated_by": request.user.id,
+                "is_open_updated_on": timezone.now(),
+        })
