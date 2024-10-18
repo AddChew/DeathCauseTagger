@@ -66,7 +66,7 @@ class TestCategories:
         Category.objects.filter(description__icontains = "diseases").update(is_active = False)
 
         response = client.get(
-            f"{categories_endpoint}?search=true", 
+            f"{categories_endpoint}?active=true", 
             headers = {
                 "Authorization": f"Bearer {access_token}"
             }
@@ -87,7 +87,7 @@ class TestCategories:
 
     def test_read_categories_auth_diseases(self, client, access_token):
         response = client.get(
-            f"{categories_endpoint}?search=diseases", 
+            f"{categories_endpoint}?description=disease", 
             headers = {
                 "Authorization": f"Bearer {access_token}"
             },
