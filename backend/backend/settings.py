@@ -160,4 +160,5 @@ FIXTURES = {
     "deathcauses": "deathcauses/fixtures/deathcauses.json",
     "codes": "codes/fixtures/codes.json",
     "periods": "periods/fixtures/periods.json",
+    "mappings": "mappings/fixtures/mappings.json",
 }
