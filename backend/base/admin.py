@@ -49,3 +49,27 @@ class BaseAdmin(admin.ModelAdmin):
             message = message,
             level = messages.SUCCESS
         )
+
+    def mark_active(self, request, queryset):
+        """
+        Mark selection as active.
+        """
+        self.action(
+            request, queryset, action = "active",
+            update_fields = {
+                "is_active": True,
+                "is_active_updated_by": request.user.id,
+                "is_active_updated_on": timezone.now(),
+        })
+
+    def mark_inactive(self, request, queryset):
+        """
+        Mark selection as inactive.
+        """
+        self.action(
+            request, queryset, action = "inactive",
+            update_fields = {
+                "is_active": False,
+                "is_active_updated_by": request.user.id,
+                "is_active_updated_on": timezone.now(),
+        })

@@ -59,3 +59,49 @@ class BaseIsActiveModel(models.Model):
 
     class Meta:
         abstract = True
+
+
+class BaseIsOpenModel(models.Model):
+    """
+    Base Is Open Model.
+    """
+    is_open = models.BooleanField(verbose_name = _("open"), default = True)
+    is_open_updated_by = models.ForeignKey(
+        User,
+        verbose_name = _("open updated by"),
+        on_delete = models.CASCADE,
+        related_name = "is_open_updated_%(class)ss",
+        default = User.get_default_user,
+        editable = False
+    )
+    is_open_updated_on = MonitorField(
+        verbose_name = _("open updated on"),
+        monitor = "is_open",
+        editable = False
+    )
+
+    class Meta:
+        abstract = True
+
+
+class BaseIsOptionModel(models.Model):
+    """
+    Base Is Option Model.
+    """
+    is_option = models.BooleanField(verbose_name = _("option"), default = True)
+    is_option_updated_by = models.ForeignKey(
+        User,
+        verbose_name = _("option updated by"),
+        on_delete = models.CASCADE,
+        related_name = "is_option_updated_%(class)ss",
+        default = User.get_default_user,
+        editable = False
+    )
+    is_option_updated_on = MonitorField(
+        verbose_name = _("option updated on"),
+        monitor = "is_option",
+        editable = False
+    )
+
+    class Meta:
+        abstract = True
