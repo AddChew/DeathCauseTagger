@@ -1,29 +1,13 @@
-import os
 import pytest
-
 from categories.models import Category
-
-
-token_endpoint = "/api/v1/token/pair"
-categories_endpoint = "/api/v1/categories"
-
-
-@pytest.fixture
-def access_token(client):
-    data = {
-        "username": os.getenv("DEFAULT_USER", "admin"),
-        "password": os.getenv("DEFAULT_PASSWORD", "admin")
-    }
-    response = client.post(token_endpoint, data, content_type = "application/json")
-    json_response = response.json()
-    return json_response["access"]
 
 
 @pytest.mark.django_db
 class TestCategories:
+    categories_endpoint = "/api/v1/categories"
         
     def test_read_categories_unauth(self, client):
-        response = client.get(categories_endpoint)
+        response = client.get(self.categories_endpoint)
         assert response.status_code == 401
         assert response.json() == {
             "detail": "Unauthorized"
@@ -31,7 +15,7 @@ class TestCategories:
 
     def test_read_categories_auth_all(self, client, access_token):
         response = client.get(
-            categories_endpoint, 
+            self.categories_endpoint, 
             headers = {
                 "Authorization": f"Bearer {access_token}"
             }
@@ -66,7 +50,7 @@ class TestCategories:
         Category.objects.filter(description__icontains = "diseases").update(is_active = False)
 
         response = client.get(
-            f"{categories_endpoint}?active=true", 
+            f"{self.categories_endpoint}?active=true", 
             headers = {
                 "Authorization": f"Bearer {access_token}"
             }
@@ -87,7 +71,7 @@ class TestCategories:
 
     def test_read_categories_auth_diseases(self, client, access_token):
         response = client.get(
-            f"{categories_endpoint}?description=disease", 
+            f"{self.categories_endpoint}?description=disease", 
             headers = {
                 "Authorization": f"Bearer {access_token}"
             },
@@ -113,7 +97,7 @@ class TestCategories:
 
     def test_read_categories_auth_ordering(self, client, access_token):
         response = client.get(
-            f"{categories_endpoint}?ordering=description", 
+            f"{self.categories_endpoint}?ordering=description", 
             headers = {
                 "Authorization": f"Bearer {access_token}"
             }
@@ -146,7 +130,7 @@ class TestCategories:
 
     def test_read_categories_auth_limit(self, client, access_token):
         response = client.get(
-            f"{categories_endpoint}?limit=5", 
+            f"{self.categories_endpoint}?limit=5", 
             headers = {
                 "Authorization": f"Bearer {access_token}"
             }
