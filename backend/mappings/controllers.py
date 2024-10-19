@@ -23,8 +23,16 @@ class MappingController:
     """
     @route.get()
     @paginate
-    @ordering(Ordering, ordering_fields = ["code__description", "death_cause__description", "code__category__description"])
-    async def read_mappings(self, filters: MappingFilterSchema = Query(...)) -> NinjaPaginationResponseSchema[MappingSchema]:
+    @ordering(
+        Ordering, 
+        ordering_fields = [
+            "code__description", "death_cause__description", 
+            "code__category__description"
+        ]
+    )
+    async def read_mappings(
+        self, filters: MappingFilterSchema = Query(...)
+        ) -> NinjaPaginationResponseSchema[MappingSchema]:
         """
         Read mappings.
         """

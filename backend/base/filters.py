@@ -1,5 +1,5 @@
-from ninja import FilterSchema, Field
 from typing import Optional
+from ninja import FilterSchema, Field
 
 
 class BaseFilterSchema(FilterSchema):
