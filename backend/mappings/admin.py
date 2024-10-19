@@ -11,7 +11,7 @@ class MappingAdmin(BaseAdmin):
     Admin Class for Mapping Model.
     """
     list_display = (
-        "code", "death_cause", "code__category",
+        "code", "death_cause",
         "created_by", "created_on", 
         "updated_by", "updated_on", 
         "is_option", "is_option_updated_by", "is_option_updated_on",
