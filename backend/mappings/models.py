@@ -21,4 +21,4 @@ class Mapping(BaseModel, BaseIsOptionModel, BaseIsActiveModel, BaseIsOpenModel):
         verbose_name_plural = "Mappings"
 
     def __str__(self):
-        return f"{self.code}-{self.death_cause}"
+        return f"{self.code} - {self.death_cause}"
