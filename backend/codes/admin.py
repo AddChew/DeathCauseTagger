@@ -1,5 +1,4 @@
 from django.contrib import admin
-from django.utils import timezone
 
 from base.admin import BaseAdmin
 from codes.models import Code
@@ -10,12 +9,6 @@ class CodeAdmin(BaseAdmin):
     """
     Admin Class for Code Model.
     """
-    list_display = (
-        "description",
-        "created_by", "created_on", 
-        "updated_by", "updated_on", 
-        "is_active", "is_active_updated_by", "is_active_updated_on",
-    )
     list_filter = ("is_active", "category")
     ordering = ("description", "category")
     actions = ("mark_active", "mark_inactive")

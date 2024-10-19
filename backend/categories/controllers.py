@@ -24,7 +24,9 @@ class CategoryController:
     @route.get()
     @paginate
     @ordering
-    async def read_categories(self, filters: CategoryFilterSchema = Query(...)) -> NinjaPaginationResponseSchema[CategorySchema]:
+    async def read_categories(
+        self, filters: CategoryFilterSchema = Query(...)
+        ) -> NinjaPaginationResponseSchema[CategorySchema]:
         """
         Read categories.
         """

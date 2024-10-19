@@ -1,5 +1,4 @@
 from django.contrib import admin
-from django.utils import timezone
 
 from base.admin import BaseAdmin
 from deathcauses.models import DeathCause

@@ -2,11 +2,9 @@ import os
 import pytest
 
 
-token_endpoint = "/api/v1/token/pair"
-
-
 @pytest.fixture
 def access_token(client):
+    token_endpoint = "/api/v1/token/pair"
     data = {
         "username": os.getenv("DEFAULT_USER", "admin"),
         "password": os.getenv("DEFAULT_PASSWORD", "admin")

@@ -31,7 +31,7 @@ class MappingSchema(Schema):
         if not isinstance(code, Code):
             raise TypeError(f"{code} should be an instance of Code")
         return code.description
-    
+
     @field_validator("death_cause", mode = "before")
     @classmethod
     def parse_death_cause(cls, death_cause: DeathCause) -> str:
