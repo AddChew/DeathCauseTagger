@@ -20,5 +20,35 @@ class Mapping(BaseModel, BaseIsOptionModel, BaseIsActiveModel, BaseIsOpenModel):
     class Meta:
         verbose_name_plural = "Mappings"
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"{self.code} - {self.death_cause}"
+    
+    @property
+    def code_description(self) -> str:
+        """
+        Retrieve code description.
+
+        Returns:
+            str: Code description.
+        """
+        return self.code.description
+    
+    @property
+    def death_cause_description(self) -> str:
+        """
+        Retrieve death cause description.
+
+        Returns:
+            str: Death cause description.
+        """
+        return self.death_cause.description
+    
+    @property
+    def category(self) -> str:
+        """
+        Retrieve category description.
+
+        Returns:
+            str: Category description
+        """
+        return self.code.category.description
