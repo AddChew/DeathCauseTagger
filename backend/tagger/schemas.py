@@ -10,6 +10,13 @@ class MappingSchema(Schema):
     death_cause: str
 
 
+class OptionSchema(MappingSchema):
+    """
+    Option Schema.
+    """
+    score: float
+
+
 class DeathCauseSchema(Schema):
     """
     Death Cause Schema.
@@ -25,4 +32,4 @@ class TagSchema(Schema):
     description: str
     period: float
     tag: MappingSchema
-#     options: List[]
+    options: List[OptionSchema]
