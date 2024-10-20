@@ -33,18 +33,35 @@ class TaggerController:
             death_cause__description__iexact = death_cause, 
             is_active = True, 
             is_open = False
-        ) # TODO: period
-
+        )
         if mapping is None:
             return # TODO: retrieve options
+        
+        queryset = mapping.code.mappings
+        periods = await self.aget_object_or_none(
+            Period,
+            related_fields = [],
+            code_input = mapping.code,
+            is_active = True,
+        )
+        if isinstance(periods, Period):
+            if period < periods.threshold:
+                code = periods.code_below
 
-        if not mapping.is_option:
-            mapping = await self.aget_object_or_none(
-                mapping.code.mappings,
-                is_option = True, 
-                is_active = True, 
-                is_open = False
-            )
+            elif period == periods.threshold:
+                code = periods.code_equal
+
+            else:
+                code = periods.code_above
+
+            queryset = code.mappings
+
+        mapping = await self.aget_object_or_none(
+            queryset,
+            is_option = True, 
+            is_active = True, 
+            is_open = False
+        )
 
         return {
             "description": death_cause,
