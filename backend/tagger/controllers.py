@@ -1,6 +1,8 @@
 from ninja import PatchDict
+from typing import Iterable
 from asgiref.sync import sync_to_async
-from django.db import models
+
+from django.shortcuts import _get_queryset
 from django.forms.models import model_to_dict
 
 from ninja_extra import api_controller, route
@@ -25,35 +27,70 @@ class TaggerController:
         """
         Tag single death cause.
         """
-        try:
-            mapping = await Mapping.objects.select_related("code").aget(
-                death_cause__description__iexact = death_cause, 
+        mapping = await self.aget_object_or_none(
+            Mapping, 
+            related_fields = ["code"], 
+            death_cause__description__iexact = death_cause, 
+            is_active = True, 
+            is_open = False
+        ) # TODO: period
+
+        if mapping is None:
+            return # TODO: retrieve options
+
+        if not mapping.is_option:
+            mapping = await self.aget_object_or_none(
+                mapping.code.mappings,
+                is_option = True, 
                 is_active = True, 
                 is_open = False
-            ) # TODO: period
-            if not mapping.is_option:
-                mapping = await mapping.code.mappings.aget(
-                    is_option = True, 
-                    is_active = True, 
-                    is_open = False
-                )
-            return {
-                "description": death_cause,
-                "period": period,
-                "tag": await self.model_to_dict(mapping, fields = ["code", "death_cause"])
-            }
+            )
 
-        except Mapping.DoesNotExist:
-            pass # TODO: retrieve options
+        return {
+            "description": death_cause,
+            "period": period,
+            "tag": await self.model_to_dict(mapping, fields = ["code", "death_cause"])
+        }
+    
+    @staticmethod
+    async def aget_object_or_none(klass, related_fields: Iterable[str] = None, *args, **kwargs):
+        """
+        Get object if it exists, otherwise return None.
+
+        Args:
+            klass: Model, Manager of QuerySet. 
+            related_fields (Iterable[str], optional): Fields for selected_related. Defaults to None.
+
+        Raises:
+            ValueError: Raised when klass is not a Model, Manager or QuerySet.
+
+        Returns:
+            Union[models.Model, None]: Model object if it exists, otherwise None.
+        """
+        queryset = _get_queryset(klass)
+        if not hasattr(queryset, "aget"):
+            klass__name = (
+                klass.__name__ if isinstance(klass, type) else klass.__class__.__name__
+            )
+            raise ValueError(
+                "First argument to aget_object_or_none() must be a Model, Manager, or "
+                f"QuerySet, not '{klass__name}'."
+            )
+        if related_fields is None:
+            related_fields = (None,)
+        try:
+            return await queryset.select_related(*related_fields).aget(*args, **kwargs)
+        except queryset.model.DoesNotExist:
+            return None
         
     @staticmethod
     @sync_to_async
-    def model_to_dict(instance: models.Model, fields: list = None, exclude: list = None) -> dict:
+    def model_to_dict(instance, fields: list = None, exclude: list = None) -> dict:
         """
         Convert model to dict.
 
         Args:
-            instance (models.Model): Instance of ORM model object.
+            instance (Model): Instance of ORM model object.
             fields (list, optional): Fields to include in model dict. Defaults to None.
             exclude (list, optional): Fields to exclude from model dict. Defaults to None.
 
