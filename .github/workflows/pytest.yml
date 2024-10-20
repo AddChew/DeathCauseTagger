@@ -6,6 +6,7 @@ on:
             - ninja
     pull_request:
         branches:
+            - ninja
             - master
 
 permissions:
