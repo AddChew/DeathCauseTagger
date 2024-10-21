@@ -1,12 +1,13 @@
 from ninja import PatchDict
-from typing import Iterable
+from typing import Iterable, List
 from asgiref.sync import sync_to_async
 
 from django.shortcuts import _get_queryset
 from django.forms.models import model_to_dict
-
 from ninja_extra import api_controller, route
+
 from ninja_jwt.authentication import AsyncJWTTokenUserAuth
+from django.contrib.postgres.search import TrigramSimilarity
 
 from periods.models import Period
 from mappings.models import Mapping
@@ -27,15 +28,24 @@ class TaggerController:
         """
         Tag single death cause.
         """
-        mapping = await self.aget_object_or_none(
+        response = {"description": death_cause, "period": period}
+        mapping = await self.aget_object_or_none( # TODO: jamspell
             Mapping, 
             related_fields = ["code"], 
             death_cause__description__iexact = death_cause, 
             is_active = True, 
             is_open = False
         )
+
         if mapping is None:
-            return # TODO: retrieve options
+            mappings = Mapping.objects.filter(is_active = True, is_open = False) \
+                                      .annotate(score = TrigramSimilarity("death_cause__description", death_cause)) \
+                                      .order_by("-score") \
+                                      .prefetch_related("code") \
+                                      [:100]
+            options = [await self.model_to_dict(option, annotated_fields = ["score"]) for option in await self.retrieve_options(mappings)]
+            response.update({"options": options})
+            return response
         
         queryset = mapping.code.mappings
         periods = await self.aget_object_or_none(
@@ -62,12 +72,34 @@ class TaggerController:
             is_active = True, 
             is_open = False
         )
+        response.update({"tag": await self.model_to_dict(mapping, fields = ["code", "death_cause"])})
+        return response
+    
+    @sync_to_async
+    def retrieve_options(self, mappings: Iterable[Mapping]) -> List[Mapping]:
+        """
+        Retrieve option mappings with scores.
 
-        return {
-            "description": death_cause,
-            "period": period,
-            "tag": await self.model_to_dict(mapping, fields = ["code", "death_cause"])
-        }
+        Args:
+            mappings (Iterable[Mapping]): Top N most similar mappings to query.
+
+        Returns:
+            List[Mapping]: Option mappings.
+        """
+        options = []
+        for mapping in mappings:
+            option = mapping.code.mappings.get(
+                is_active = True, 
+                is_option = True, 
+                is_open = False
+            )
+            if option not in options:
+                option.score = mapping.score
+                options.append(option)
+
+            if len(options) == 5:
+                return options
+        return options
     
     @staticmethod
     async def aget_object_or_none(klass, related_fields: Iterable[str] = None, *args, **kwargs):
@@ -102,21 +134,31 @@ class TaggerController:
         
     @staticmethod
     @sync_to_async
-    def model_to_dict(instance, fields: list = None, exclude: list = None) -> dict:
+    def model_to_dict(instance, fields: list = None, exclude: list = None, annotated_fields: List[str] = None) -> dict:
         """
         Convert model to dict.
 
         Args:
             instance (Model): Instance of ORM model object.
-            fields (list, optional): Fields to include in model dict. Defaults to None.
-            exclude (list, optional): Fields to exclude from model dict. Defaults to None.
+            fields (list, optional): Model fields to include in model dict. Defaults to None.
+            exclude (list, optional): Model fields to exclude from model dict. Defaults to None.
+            annotated_fields (List[str], optional): Annotated fields to include in model dict. Defaults to None.
 
         Returns:
             dict: Model dict.
         """
-        opts = instance._meta.fields
+        annotated_fields = tuple(annotated_fields) if annotated_fields is not None else ()
+        opts = instance._meta.fields + annotated_fields
         modeldict = model_to_dict(instance, fields = fields, exclude = exclude)
         for m in opts:
+            if m in annotated_fields:
+                annotatedfield = getattr(instance, m)
+                if annotatedfield:
+                    try:
+                        modeldict[m] = annotatedfield
+                    except:
+                        pass
+                continue
             if fields is not None and m.name not in fields:
                 continue
             if exclude and m.name in exclude:
