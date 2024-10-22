@@ -1,13 +1,13 @@
 from typing import List
-from ninja import Schema
+from ninja import Schema, Field
 
 
 class MappingSchema(Schema):
     """
     Mapping Schema.
     """
-    code: str
-    death_cause: str
+    code: str = Field(alias = "code.description")
+    death_cause: str = Field(alias = "death_cause.description")
 
 
 class DeathCauseSchema(Schema):

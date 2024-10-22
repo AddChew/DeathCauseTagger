@@ -3,9 +3,7 @@ from typing import Iterable, List
 from asgiref.sync import sync_to_async
 
 from django.shortcuts import _get_queryset
-from django.forms.models import model_to_dict
 from ninja_extra import api_controller, route
-
 from django.contrib.postgres.search import TrigramSimilarity
 
 from periods.models import Period
@@ -35,7 +33,6 @@ class TaggerController:
             is_active = True,
             is_open = False
         )
-
         if mapping is None:
             mappings = Mapping.objects.filter(is_active = True, is_open = False) \
                                       .annotate(score = TrigramSimilarity(
@@ -43,13 +40,9 @@ class TaggerController:
                                       .order_by("-score") \
                                       .prefetch_related("code") \
                                       [:100]
-            options = [
-                await self.model_to_dict(option)
-                for option in await self.retrieve_options(mappings)
-            ]
-            response.update({"options": options})
+            response.update({"options": await self.retrieve_options(mappings)})
             return response
-
+        
         queryset = mapping.code.mappings
         periods = await self.aget_object_or_none(
             Period,
@@ -75,9 +68,7 @@ class TaggerController:
             is_active = True,
             is_open = False
         )
-        response.update({
-            "tag": await self.model_to_dict(mapping, fields = ["code", "death_cause"])
-        })
+        response.update({"tag": mapping})
         return response
 
     @sync_to_async
@@ -135,33 +126,3 @@ class TaggerController:
             return await queryset.select_related(*related_fields).aget(*args, **kwargs)
         except queryset.model.DoesNotExist:
             return None
-
-    @staticmethod
-    @sync_to_async
-    def model_to_dict(instance, fields: list = None, exclude: list = None) -> dict:
-        """
-        Convert model to dict.
-
-        Args:
-            instance (Model): Instance of ORM model object.
-            fields (list, optional): Model fields to include in model dict. Defaults to None.
-            exclude (list, optional): Model fields to exclude from model dict. Defaults to None.
-
-        Returns:
-            dict: Model dict.
-        """
-        opts = instance._meta.fields
-        modeldict = model_to_dict(instance, fields = fields, exclude = exclude)
-        for m in opts:
-            if fields is not None and m.name not in fields:
-                continue
-            if exclude and m.name in exclude:
-                continue
-            if m.is_relation:
-                foreignkey = getattr(instance, m.name)
-                if foreignkey:
-                    try:
-                        modeldict[m.name] = str(foreignkey)
-                    except Exception:
-                        pass
-        return modeldict
