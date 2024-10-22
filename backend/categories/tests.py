@@ -50,10 +50,11 @@ class TestCategories:
         Category.objects.filter(description__icontains = "diseases").update(is_active = False)
 
         response = client.get(
-            f"{self.categories_endpoint}?active=true", 
+            self.categories_endpoint, 
             headers = {
                 "Authorization": f"Bearer {access_token}"
-            }
+            },
+            query_params = {"active": True}
         )
         body = response.json()
 
@@ -71,10 +72,11 @@ class TestCategories:
 
     def test_read_categories_auth_diseases(self, client, access_token):
         response = client.get(
-            f"{self.categories_endpoint}?description=disease", 
+            self.categories_endpoint, 
             headers = {
                 "Authorization": f"Bearer {access_token}"
             },
+            query_params = {"description": "disease"}
         )
         body = response.json()
 
@@ -97,10 +99,11 @@ class TestCategories:
 
     def test_read_categories_auth_ordering(self, client, access_token):
         response = client.get(
-            f"{self.categories_endpoint}?ordering=description", 
+            self.categories_endpoint, 
             headers = {
                 "Authorization": f"Bearer {access_token}"
-            }
+            },
+            query_params = {"ordering": "description"}
         )
         body = response.json()
 
@@ -130,10 +133,11 @@ class TestCategories:
 
     def test_read_categories_auth_limit(self, client, access_token):
         response = client.get(
-            f"{self.categories_endpoint}?limit=5", 
+            self.categories_endpoint, 
             headers = {
                 "Authorization": f"Bearer {access_token}"
-            }
+            },
+            query_params = {"limit": 5}
         )
         body = response.json()
 

@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'codes',
     'mappings',
     'periods',
+    'tagger',
     'ninja_jwt',
     'ninja_extra',
     'ninja_jwt.token_blacklist',

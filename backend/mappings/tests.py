@@ -16,10 +16,11 @@ class TestMappings:
 
     def test_read_mappings_auth_limit(self, client, access_token):
         response = client.get(
-            f"{self.mappings_endpoint}?limit=5", 
+            self.mappings_endpoint, 
             headers = {
                 "Authorization": f"Bearer {access_token}"
-            }
+            },
+            query_params = {"limit": 5}
         )
         body = response.json()
 
@@ -58,10 +59,11 @@ class TestMappings:
         Mapping.objects.filter(code__description__icontains = "A00").update(is_active = False)
 
         response = client.get(
-            f"{self.mappings_endpoint}?active=false", 
+            self.mappings_endpoint, 
             headers = {
                 "Authorization": f"Bearer {access_token}"
-            }
+            },
+            query_params = {"active": False}
         )
         body = response.json()
 
@@ -87,10 +89,11 @@ class TestMappings:
 
     def test_read_mappings_auth_death_cause(self, client, access_token):
         response = client.get(
-            f"{self.mappings_endpoint}?death_cause=cholera", 
+            self.mappings_endpoint, 
             headers = {
                 "Authorization": f"Bearer {access_token}"
             },
+            query_params = {"death_cause": "cholera"}
         )
         body = response.json()
 
@@ -121,10 +124,11 @@ class TestMappings:
 
     def test_read_mappings_auth_category(self, client, access_token):
         response = client.get(
-            f"{self.mappings_endpoint}?category=unknown&limit=5", 
+            self.mappings_endpoint, 
             headers = {
                 "Authorization": f"Bearer {access_token}"
             },
+            query_params = {"category": "unknown", "limit": 5}
         )
         body = response.json()
 
@@ -160,10 +164,11 @@ class TestMappings:
 
     def test_read_mappings_auth_option(self, client, access_token):
         response = client.get(
-            f"{self.mappings_endpoint}?option=true&limit=3", 
+            self.mappings_endpoint, 
             headers = {
                 "Authorization": f"Bearer {access_token}"
-            }
+            },
+            query_params = {"option": True, "limit": 3}
         )
         body = response.json()
 
@@ -191,10 +196,11 @@ class TestMappings:
         Mapping.objects.filter(code__description__icontains = "B00").update(is_open = True)
 
         response = client.get(
-            f"{self.mappings_endpoint}?open=true&limit=3", 
+            self.mappings_endpoint, 
             headers = {
                 "Authorization": f"Bearer {access_token}"
-            }
+            },
+            query_params = {"open": True, "limit": 3}
         )
         body = response.json()
 
@@ -220,10 +226,11 @@ class TestMappings:
 
     def test_read_mappings_auth_code_ordering(self, client, access_token):
         response = client.get(
-            f"{self.mappings_endpoint}?ordering=-code__description&limit=3", 
+            self.mappings_endpoint, 
             headers = {
                 "Authorization": f"Bearer {access_token}"
-            }
+            },
+            query_params = {"ordering": "-code__description", "limit": 3}
         )
         body = response.json()
 
@@ -249,10 +256,11 @@ class TestMappings:
 
     def test_read_mappings_auth_death_cause_ordering(self, client, access_token):
         response = client.get(
-            f"{self.mappings_endpoint}?ordering=-death_cause__description&limit=3", 
+            self.mappings_endpoint, 
             headers = {
                 "Authorization": f"Bearer {access_token}"
-            }
+            },
+            query_params = {"ordering": "-death_cause__description", "limit": 3}
         )
         body = response.json()
 
@@ -278,10 +286,11 @@ class TestMappings:
 
     def test_read_mappings_auth_category_ordering(self, client, access_token):
         response = client.get(
-            f"{self.mappings_endpoint}?ordering=code__category__description&limit=3", 
+            self.mappings_endpoint, 
             headers = {
                 "Authorization": f"Bearer {access_token}"
-            }
+            },
+            query_params = {"ordering": "code__category__description", "limit": 3}
         )
         body = response.json()
 
