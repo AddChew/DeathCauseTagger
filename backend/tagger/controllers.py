@@ -6,7 +6,6 @@ from django.shortcuts import _get_queryset
 from django.forms.models import model_to_dict
 from ninja_extra import api_controller, route
 
-from ninja_jwt.authentication import AsyncJWTTokenUserAuth
 from django.contrib.postgres.search import TrigramSimilarity
 
 from periods.models import Period
@@ -29,24 +28,28 @@ class TaggerController:
         Tag single death cause.
         """
         response = {"description": death_cause, "period": period}
-        mapping = await self.aget_object_or_none( # TODO: jamspell
-            Mapping, 
-            related_fields = ["code"], 
-            death_cause__description__iexact = death_cause, 
-            is_active = True, 
+        mapping = await self.aget_object_or_none(
+            Mapping,
+            related_fields = ["code"],
+            death_cause__description__iexact = death_cause,
+            is_active = True,
             is_open = False
         )
 
         if mapping is None:
             mappings = Mapping.objects.filter(is_active = True, is_open = False) \
-                                      .annotate(score = TrigramSimilarity("death_cause__description", death_cause)) \
+                                      .annotate(score = TrigramSimilarity(
+                                          "death_cause__description", death_cause)) \
                                       .order_by("-score") \
                                       .prefetch_related("code") \
                                       [:100]
-            options = [await self.model_to_dict(option, annotated_fields = ["score"]) for option in await self.retrieve_options(mappings)]
+            options = [
+                await self.model_to_dict(option, annotated_fields = ["score"])
+                for option in await self.retrieve_options(mappings)
+            ]
             response.update({"options": options})
             return response
-        
+
         queryset = mapping.code.mappings
         periods = await self.aget_object_or_none(
             Period,
@@ -68,13 +71,15 @@ class TaggerController:
 
         mapping = await self.aget_object_or_none(
             queryset,
-            is_option = True, 
-            is_active = True, 
+            is_option = True,
+            is_active = True,
             is_open = False
         )
-        response.update({"tag": await self.model_to_dict(mapping, fields = ["code", "death_cause"])})
+        response.update({
+            "tag": await self.model_to_dict(mapping, fields = ["code", "death_cause"])
+        })
         return response
-    
+
     @sync_to_async
     def retrieve_options(self, mappings: Iterable[Mapping]) -> List[Mapping]:
         """
@@ -89,8 +94,8 @@ class TaggerController:
         options = []
         for mapping in mappings:
             option = mapping.code.mappings.get(
-                is_active = True, 
-                is_option = True, 
+                is_active = True,
+                is_option = True,
                 is_open = False
             )
             if option not in options:
@@ -100,7 +105,7 @@ class TaggerController:
             if len(options) == 5:
                 return options
         return options
-    
+
     @staticmethod
     async def aget_object_or_none(klass, related_fields: Iterable[str] = None, *args, **kwargs):
         """
@@ -131,10 +136,12 @@ class TaggerController:
             return await queryset.select_related(*related_fields).aget(*args, **kwargs)
         except queryset.model.DoesNotExist:
             return None
-        
+
     @staticmethod
     @sync_to_async
-    def model_to_dict(instance, fields: list = None, exclude: list = None, annotated_fields: List[str] = None) -> dict:
+    def model_to_dict(
+        instance, fields: list = None, exclude: list = None,
+        annotated_fields: List[str] = None) -> dict:
         """
         Convert model to dict.
 
@@ -142,7 +149,8 @@ class TaggerController:
             instance (Model): Instance of ORM model object.
             fields (list, optional): Model fields to include in model dict. Defaults to None.
             exclude (list, optional): Model fields to exclude from model dict. Defaults to None.
-            annotated_fields (List[str], optional): Annotated fields to include in model dict. Defaults to None.
+            annotated_fields (List[str], optional): Annotated fields to include in model dict. 
+                Defaults to None.
 
         Returns:
             dict: Model dict.
@@ -156,7 +164,7 @@ class TaggerController:
                 if annotatedfield:
                     try:
                         modeldict[m] = annotatedfield
-                    except:
+                    except Exception:
                         pass
                 continue
             if fields is not None and m.name not in fields:
@@ -168,6 +176,6 @@ class TaggerController:
                 if foreignkey:
                     try:
                         modeldict[m.name] = str(foreignkey)
-                    except:
+                    except Exception:
                         pass
         return modeldict
