@@ -70,27 +70,22 @@ class TestTag:
                 {
                     "code": "I259",
                     "death_cause": "CHRONIC ISCHAEMIC HEART DISEASE UNSPECIFIED",
-                    "score": 0.88
                 },
                 {
                     "code": "I249",
                     "death_cause": "ACUTE ISCHAEMIC HEART DISEASE UNSPECIFIED",
-                    "score": 0.7096774
                 },
                 {
                     "code": "K559",
                     "death_cause": "VASCULAR DISORDER OF INTESTINE UNSPECIFIED",
-                    "score": 0.62068963
                 },
                 {
                     "code": "I119",
                     "death_cause": "HYPERTENSIVE HEART DISEASE WITHOUT CONGESTIVE HEART FAILURE",
-                    "score": 0.5365854
                 },
                 {
                     "code": "I248",
                     "death_cause": "OTHER FORMS OF ACUTE ISCHAEMIC HEART DISEASE",
-                    "score": 0.4888889
                 }
             ]
         }
