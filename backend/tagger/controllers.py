@@ -44,7 +44,7 @@ class TaggerController:
                                       .prefetch_related("code") \
                                       [:100]
             options = [
-                await self.model_to_dict(option, annotated_fields = ["score"])
+                await self.model_to_dict(option)
                 for option in await self.retrieve_options(mappings)
             ]
             response.update({"options": options})
@@ -99,7 +99,6 @@ class TaggerController:
                 is_open = False
             )
             if option not in options:
-                option.score = mapping.score
                 options.append(option)
 
             if len(options) == 5:
@@ -139,9 +138,7 @@ class TaggerController:
 
     @staticmethod
     @sync_to_async
-    def model_to_dict(
-        instance, fields: list = None, exclude: list = None,
-        annotated_fields: List[str] = None) -> dict:
+    def model_to_dict(instance, fields: list = None, exclude: list = None) -> dict:
         """
         Convert model to dict.
 
@@ -149,24 +146,13 @@ class TaggerController:
             instance (Model): Instance of ORM model object.
             fields (list, optional): Model fields to include in model dict. Defaults to None.
             exclude (list, optional): Model fields to exclude from model dict. Defaults to None.
-            annotated_fields (List[str], optional): Annotated fields to include in model dict. 
-                Defaults to None.
 
         Returns:
             dict: Model dict.
         """
-        annotated_fields = tuple(annotated_fields) if annotated_fields is not None else ()
-        opts = instance._meta.fields + annotated_fields
+        opts = instance._meta.fields
         modeldict = model_to_dict(instance, fields = fields, exclude = exclude)
         for m in opts:
-            if m in annotated_fields:
-                annotatedfield = getattr(instance, m)
-                if annotatedfield:
-                    try:
-                        modeldict[m] = annotatedfield
-                    except Exception:
-                        pass
-                continue
             if fields is not None and m.name not in fields:
                 continue
             if exclude and m.name in exclude:
