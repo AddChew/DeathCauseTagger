@@ -27,3 +27,14 @@ class TagSchema(Schema):
     period: float
     tag: Optional[MappingSchema] = None
     options: Optional[List[MappingSchema]] = None
+
+
+class PeriodSchema(Schema):
+    """
+    Period Schema.
+    """
+    threshold: float
+    code: str = Field(alias = "code_input.description")
+    code_below: str = Field(alias = "code_below.description")
+    code_equal: str = Field(alias = "code_equal.description")
+    code_above: str = Field(alias = "code_above.description")

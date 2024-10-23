@@ -9,11 +9,12 @@ from django.shortcuts import _get_queryset
 from django.db.models.query import QuerySet
 
 from ninja_extra import api_controller, route
+from ninja_jwt.authentication import AsyncJWTTokenUserAuth
 from django.contrib.postgres.search import TrigramSimilarity
 
 from periods.models import Period
 from mappings.models import Mapping
-from tagger.schemas import TagSchema, DeathCauseSchema, MappingSchema
+from tagger.schemas import TagSchema, DeathCauseSchema, MappingSchema, PeriodSchema
 
 
 @api_controller(
@@ -76,8 +77,7 @@ class TaggerController:
         response.update({"tag": mapping})
         return response
 
-    # @route.post(auth = AsyncJWTTokenUserAuth())
-    @route.post(exclude_none = True)
+    @route.post(auth = AsyncJWTTokenUserAuth(), exclude_none = True)
     async def tag_batch(self, data: RootModel[List[DeathCauseSchema]], sync: bool = False) -> List[TagSchema]:
         """
         Tag batch death causes.
@@ -88,26 +88,32 @@ class TaggerController:
             death_cause__description__in = data["description"].values,
             is_active = True,
             is_open = False
-        ).select_related("code")
+        ).select_related("code", "death_cause")
 
         schema = RootModel[List[MappingSchema]]
         df_mappings = await self.to_dataframe(mappings, schema)
         df_mappings = df_mappings.rename(columns = {"death_cause": "description"})
+
+        data = data.merge(df_mappings, on = "description", how = "left")
+        periods = Period.objects.filter(
+            code_input__description__in = df_mappings["code"].values,
+            is_active = True,
+        )
+        df_periods = await self.to_dataframe(periods, schema = RootModel[List[PeriodSchema]])
+
+        data = data.merge(df_periods, on = "code", how = "left")
+        data["code"] = data.apply(self.account_period, axis = 1)
         mappings = Mapping.objects.filter(
-            code__description__in = df_mappings["code"].values,
+            code__description__in = data["code"].values,
             is_option = True,
             is_active = True,
             is_open = False,
         )
 
         df_tags = await self.to_dataframe(mappings, schema)
-        data = data.merge(df_mappings, on = "description", how = "left")
-
         df_tags["tag"] = df_tags.to_dict("records")
-        df_tags = df_tags.drop(columns = "death_cause")
 
         return data.merge(df_tags, on = "code", how = "left") \
-                   .drop(columns = "code") \
                    .replace({pd.NA: None}) \
                    .to_dict("records")
 
@@ -183,3 +189,26 @@ class TaggerController:
         """
         obj = schema(list(queryset))
         return pd.DataFrame(obj.model_dump())
+
+    @staticmethod
+    def account_period(record: pd.Series) -> str:
+        """
+        Retrieve code based on period.
+
+        Args:
+            record (pd.Series): Dataframe record.
+
+        Returns:
+            str: Code corresponding to period.
+        """
+        if not isinstance(record.code, str):
+            return record.code
+        
+        if record.period < record.threshold:
+            return record.code_below
+        
+        elif record.period == record.threshold:
+            return record.code_equal
+        
+        else:
+            return record.code_above
