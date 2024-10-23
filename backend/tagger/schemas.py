@@ -1,13 +1,14 @@
 from typing import List
 from ninja import Schema, Field
+from pydantic import AliasChoices
 
 
 class MappingSchema(Schema):
     """
     Mapping Schema.
     """
-    code: str = Field(alias = "code.description")
-    death_cause: str = Field(alias = "death_cause.description")
+    code: str = Field(validation_alias = AliasChoices("code.description", "code"))
+    death_cause: str = Field(validation_alias = AliasChoices("death_cause.description", "death_cause"))
 
 
 class DeathCauseSchema(Schema):
