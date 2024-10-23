@@ -77,8 +77,8 @@ class TaggerController:
         return response
 
     # @route.post(auth = AsyncJWTTokenUserAuth())
-    @route.post()
-    async def tag_batch(self, data: RootModel[List[DeathCauseSchema]], sync: bool = False) -> List[PatchDict[TagSchema]]:
+    @route.post(exclude_none = True)
+    async def tag_batch(self, data: RootModel[List[DeathCauseSchema]], sync: bool = False) -> List[TagSchema]:
         """
         Tag batch death causes.
         """
@@ -108,6 +108,7 @@ class TaggerController:
 
         return data.merge(df_tags, on = "code", how = "left") \
                    .drop(columns = "code") \
+                   .replace({pd.NA: None}) \
                    .to_dict("records")
 
     @staticmethod

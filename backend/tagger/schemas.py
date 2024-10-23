@@ -1,5 +1,5 @@
-from typing import List
 from ninja import Schema, Field
+from typing import List, Optional
 from pydantic import AliasChoices
 
 
@@ -25,5 +25,5 @@ class TagSchema(Schema):
     """
     description: str
     period: float
-    tag: MappingSchema
-    options: List[MappingSchema]
+    tag: Optional[MappingSchema] = None
+    options: Optional[List[MappingSchema]] = None
