@@ -113,9 +113,27 @@ class TaggerController:
         df_tags = await self.to_dataframe(mappings, schema)
         df_tags["tag"] = df_tags.to_dict("records")
 
-        return data.merge(df_tags, on = "code", how = "left") \
-                   .replace({pd.NA: None}) \
-                   .to_dict("records")
+        data = data.merge(df_tags, on = "code", how = "left")
+        missing_tag = data["tag"].isna()
+
+        if missing_tag.sum() > 0:
+            options_all = []
+            for record in data[missing_tag].itertuples():
+                mappings = Mapping.objects.filter(is_active = True, is_open = False) \
+                                          .annotate(score = TrigramSimilarity(
+                                              "death_cause__description", record.description)) \
+                                          .order_by("-score") \
+                                          .select_related("code") \
+                                          [:100]
+                options = await self.retrieve_options(mappings)
+                options_all.append({
+                    "description": record.description, "period": record.period, "options": options
+                })
+            
+            df_options = pd.DataFrame(options_all)
+            data = data.merge(df_options, on = ["description", "period"], how = "left")
+
+        return data.replace({pd.NA: None}).to_dict("records")
 
     @staticmethod
     @sync_to_async
@@ -185,7 +203,7 @@ class TaggerController:
             schema (BaseModel): Schema to transform QuerySet to pydantic model object.
 
         Returns:
-            pd.DataFrame: _description_
+            pd.DataFrame: QuerySet dataframe.
         """
         obj = schema(list(queryset))
         return pd.DataFrame(obj.model_dump())
